@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Takvim | RutinApp</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background: linear-gradient(to right, #fceabb, #f8b500);
+      font-family: 'Segoe UI', sans-serif;
+      overflow-x: hidden;
+    }
+    .motivasyon-banner {
+      background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      color: #333;
+      margin-bottom: 30px;
+    }
+    .motivasyon-banner h4 {
+      font-weight: bold;
+    }
+    .card {
+      border-radius: 12px;
+    }
+    .list-group-item {
+      background-color: #fffaf2;
+      border: none;
+      border-bottom: 1px solid #f0d78c;
+    }
+    .bubble {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      animation: floatBubble 25s infinite ease-in-out;
+      transition: all 0.3s ease-in-out;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      z-index: 5;
+      background-color: var(--bubble-color);
+      color: #fff;
+    }
+    .bubble:hover::after {
+      content: '\1F52A';
+      position: absolute;
+      font-size: 1.5rem;
+      bottom: -20px;
+    }
+    @keyframes floatBubble {
+      0% { transform: translate(0, 100vh); }
+      100% { transform: translate(calc(-50vw + 100vw * var(--rand-x)), -110vh); }
+    }
+    .motivation-popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+      z-index: 9999;
+      text-align: center;
+      font-size: 1.2rem;
+      max-width: 400px;
+      display: none;
+      animation: popUp 0.4s ease;
+    }
+    .motivation-popup .stars {
+      font-size: 1.5rem;
+      color: gold;
+      margin-bottom: 10px;
+    }
+    .motivation-popup button {
+      margin-top: 15px;
+    }
+    @keyframes popUp {
+      from { transform: translate(-50%, -40%) scale(0.8); opacity: 0; }
+      to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- MOTIVASYON POPUP -->
+  <div id="popup" class="motivation-popup">
+    <div class="stars">✨🌟✨</div>
+    <div id="popup-message">Mesaj yüklendi.</div>
+    <button class="btn btn-outline-primary btn-sm" onclick="document.getElementById('popup').style.display='none'">Kapat</button>
+  </div>
+
+  <!-- BALONLAR -->
+  <div class="bubble" style="--bubble-color: #e74c3c; --rand-x: 0.1; left:5%">🎈</div>
+  <div class="bubble" style="--bubble-color: #3498db; --rand-x: 0.3; left:20%">🎈</div>
+  <div class="bubble" style="--bubble-color: #2ecc71; --rand-x: 0.6; left:35%">🎈</div>
+  <div class="bubble" style="--bubble-color: #f39c12; --rand-x: 0.8; left:50%">🎈</div>
+  <div class="bubble" style="--bubble-color: #9b59b6; --rand-x: 0.2; left:65%">🎈</div>
+  <div class="bubble" style="--bubble-color: #1abc9c; --rand-x: 0.4; left:80%">🎈</div>
+  <div class="bubble" style="--bubble-color: #e67e22; --rand-x: 0.7; left:90%">🎈</div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="index.html">🕒 RutinApp</a>
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="index.html">Anasayfa</a></li>
+          <li class="nav-item"><a class="nav-link active" href="calendar.html">Takvim</a></li>
+          <li class="nav-item"><a class="nav-link" href="notes.html">Notlar</a></li>
+          <li class="nav-item"><a class="nav-link" href="goals.html">Hedefler</a></li>
+          <li class="nav-item"><a class="nav-link" href="motivation.html">Motivasyon</a></li>
+          <li class="nav-item"><a class="nav-link" href="settings.html">Ayarlar</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- TAKVİM SAYFASI -->
+  <div class="container py-5">
+    <div class="motivasyon-banner text-center mb-5">
+      <h4>🎯 Günlük İlham</h4>
+      <ul class="list-unstyled mt-3">
+        <li>✨ Bugün bir adım at, yarın gururla hatırla.</li>
+        <li>🔥 Zorluklar seni durdurmasın, seni büyütsün.</li>
+        <li>💪 Rutinlerin gücüyle hedeflerine ulaş!</li>
+      </ul>
+    </div>
+
+    <h2 class="text-center mb-4">📅 Görev Takvimi</h2>
+    <p class="text-center">Aşağıdan bir tarih seçerek o güne ait görevlerini görüntüle:</p>
+
+    <div class="row justify-content-center mb-4">
+      <div class="col-md-6">
+        <input type="date" id="calendarDate" class="form-control form-control-lg shadow-sm">
+      </div>
+    </div>
+
+    <div class="card shadow">
+      <div class="card-header bg-warning bg-gradient text-dark">
+        <h5 class="mb-0">🗓 Seçilen Günün Görevleri</h5>
+      </div>
+      <ul id="calendarTaskList" class="list-group list-group-flush">
+        <li class="list-group-item text-muted">📭 Henüz görev yok...</li>
+      </ul>
+    </div>
+  </div>
+
+  <footer class="text-center text-white bg-dark py-3 mt-5">
+    <small>&copy; 2025 RutinApp • Zamanını Altına Çevir ✨</small>
+  </footer>
+
+  <script>
+     const apiURL = "http://localhost:5000/api/reminders";
+  const calendarInput = document.getElementById("calendarDate");
+  const calendarTaskList = document.getElementById("calendarTaskList");
+
+  // Takvimden görev çekme
+  calendarInput.addEventListener("change", async () => {
+    const selectedDate = new Date(calendarInput.value);
+    const response = await fetch(apiURL);
+    const data = await response.json();
+
+    const filtered = data.filter(item => {
+      const taskDate = new Date(item.time);
+      return taskDate.toDateString() === selectedDate.toDateString();
+    });
+
+    calendarTaskList.innerHTML = "";
+
+    if (filtered.length === 0) {
+      calendarTaskList.innerHTML = `<li class="list-group-item text-muted">📭 Seçilen tarihte görev bulunamadı.</li>`;
+      return;
+    }
+
+    filtered.forEach(task => {
+      const li = document.createElement("li");
+      li.className = "list-group-item d-flex justify-content-between align-items-center";
+      li.innerHTML = `
+        <span>✅ ${task.text}</span>
+        <span class="badge bg-secondary">${new Date(task.time).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}</span>
+      `;
+      calendarTaskList.appendChild(li);
+    });
+  });
+
+  // Balonlara tıklanınca veritabanından motivasyon mesajı çekme
+  document.querySelectorAll(".bubble").forEach(bubble => {
+    bubble.addEventListener("click", async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/motivation/daily");
+        const data = await res.json();
+        document.getElementById("popup-message").innerText = data.text;
+        document.getElementById("popup").style.display = "block";
+      } catch (err) {
+        document.getElementById("popup-message").innerText = "⚠️ Motivasyon mesajı alınamadı!";
+        document.getElementById("popup").style.display = "block";
+      }
+    });
+  });
+  </script>
+</body>
+</html>

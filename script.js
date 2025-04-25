@@ -1,25 +1,43 @@
-// Hatırlatıcıları almak ve eklemek için fonksiyon
-function loadReminders() {
-    const reminders = JSON.parse(localStorage.getItem("reminders")) || [];
+const apiURL = "http://localhost:5000/api/reminders";
+
+// Hatırlatıcıları çek
+async function loadReminders() {
+    const response = await fetch(apiURL);
+    const reminders = await response.json();
+
     const reminderList = document.getElementById("reminderList");
-    reminderList.innerHTML = ""; // Önceden eklenmiş hatırlatıcıları temizle
+    reminderList.innerHTML = "";
 
     reminders.forEach(item => {
         const li = document.createElement("li");
-        li.textContent = `${item.reminder} - ${new Date(item.time).toLocaleString()}`;
+        li.textContent = `${item.text} - ${new Date(item.time).toLocaleString()}`;
+
+        // 🔴 Sil butonu
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "Sil";
+        deleteBtn.style.marginLeft = "10px";
+        deleteBtn.onclick = async () => {
+            await fetch(`${apiURL}/${item._id}`, { method: "DELETE" });
+            loadReminders();
+        };
+
+        li.appendChild(deleteBtn);
         reminderList.appendChild(li);
     });
 }
-
-// Hatırlatıcıyı kaydetme fonksiyonu
-function saveReminder(reminder, time) {
-    const reminders = JSON.parse(localStorage.getItem("reminders")) || [];
-    reminders.push({ reminder, time });
-    localStorage.setItem("reminders", JSON.stringify(reminders));
+// Hatırlatıcı ekle
+async function saveReminder(reminder, time) {
+    await fetch(apiURL, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ text: reminder, time }),
+    });
 }
 
-// Hatalı giriş kontrolü
-document.getElementById("reminderForm").addEventListener("submit", function(e) {
+// Form gönderimi
+document.getElementById("reminderForm").addEventListener("submit", async function(e) {
     e.preventDefault();
     const reminderText = document.getElementById("reminderInput").value;
     const reminderTime = document.getElementById("reminderTime").value;
@@ -27,30 +45,30 @@ document.getElementById("reminderForm").addEventListener("submit", function(e) {
     if (reminderText === "" || reminderTime === "") {
         alert("Lütfen tüm alanları doldurun.");
     } else {
-        saveReminder(reminderText, reminderTime);
-        loadReminders();
-        document.getElementById("reminderInput").value = ""; // Input'u sıfırla
-        document.getElementById("reminderTime").value = ""; // Saat seçiciyi sıfırla
+        await saveReminder(reminderText, reminderTime);
+        await loadReminders();
+
+        document.getElementById("reminderInput").value = "";
+        document.getElementById("reminderTime").value = "";
     }
 });
 
 // Zamanı kontrol et
-setInterval(checkReminders, 60000); // Her dakika kontrol et
+setInterval(checkReminders, 60000);
 
-// Hatırlatıcıları kontrol et ve bildirim gönder
-function checkReminders() {
-    const reminders = JSON.parse(localStorage.getItem("reminders")) || [];
+async function checkReminders() {
+    const response = await fetch(apiURL);
+    const reminders = await response.json();
     const currentTime = new Date().getTime();
 
-    reminders.forEach((item, index) => {
+    for (let item of reminders) {
         const reminderTime = new Date(item.time).getTime();
         if (reminderTime <= currentTime) {
-            alert(`Hatırlatıcı: ${item.reminder}`);
-            reminders.splice(index, 1); // Hatırlatıcıyı sil
-            localStorage.setItem("reminders", JSON.stringify(reminders));
+            alert(`Hatırlatıcı: ${item.text}`);
+            // İsteğe bağlı: otomatik silme ekleyebiliriz
         }
-    });
+    }
 }
 
-// Sayfa yüklendiğinde hatırlatıcıları yükle
+// Sayfa açıldığında yükle
 loadReminders();
