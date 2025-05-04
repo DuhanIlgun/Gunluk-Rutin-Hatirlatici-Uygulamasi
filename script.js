@@ -1,8 +1,14 @@
 const apiURL = "http://localhost:5000/api/reminders";
+const token = localStorage.getItem("token");
+if (!token) {
+    window.location.href = "login.html";
+}
 
 // Hatırlatıcıları çek
 async function loadReminders() {
-    const response = await fetch(apiURL);
+    const response = await fetch(apiURL, {
+        headers: { "Authorization": `Bearer ${token}` }
+    });
     const reminders = await response.json();
 
     const reminderList = document.getElementById("reminderList");
@@ -12,12 +18,14 @@ async function loadReminders() {
         const li = document.createElement("li");
         li.textContent = `${item.text} - ${new Date(item.time).toLocaleString()}`;
 
-        // 🔴 Sil butonu
         const deleteBtn = document.createElement("button");
         deleteBtn.textContent = "Sil";
         deleteBtn.style.marginLeft = "10px";
         deleteBtn.onclick = async () => {
-            await fetch(`${apiURL}/${item._id}`, { method: "DELETE" });
+            await fetch(`${apiURL}/${item._id}`, {
+                method: "DELETE",
+                headers: { "Authorization": `Bearer ${token}` }
+            });
             loadReminders();
         };
 
@@ -25,14 +33,16 @@ async function loadReminders() {
         reminderList.appendChild(li);
     });
 }
+
 // Hatırlatıcı ekle
 async function saveReminder(reminder, time) {
     await fetch(apiURL, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
         },
-        body: JSON.stringify({ text: reminder, time }),
+        body: JSON.stringify({ text: reminder, time })
     });
 }
 
@@ -57,7 +67,9 @@ document.getElementById("reminderForm").addEventListener("submit", async functio
 setInterval(checkReminders, 60000);
 
 async function checkReminders() {
-    const response = await fetch(apiURL);
+    const response = await fetch(apiURL, {
+        headers: { "Authorization": `Bearer ${token}` }
+    });
     const reminders = await response.json();
     const currentTime = new Date().getTime();
 
@@ -65,10 +77,8 @@ async function checkReminders() {
         const reminderTime = new Date(item.time).getTime();
         if (reminderTime <= currentTime) {
             alert(`Hatırlatıcı: ${item.text}`);
-            // İsteğe bağlı: otomatik silme ekleyebiliriz
         }
     }
 }
 
-// Sayfa açıldığında yükle
 loadReminders();
