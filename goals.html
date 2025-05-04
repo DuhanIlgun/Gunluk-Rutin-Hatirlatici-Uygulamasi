@@ -1,11 +1,255 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hedefler | RutinApp</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    html, body {
+      max-width: 100%;
+      overflow-x: hidden !important;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      scrollbar-width: none;
+    }
+    body::-webkit-scrollbar {
+      display: none;
+    }
+
+    body {
+      background: linear-gradient(to right, #d4fc79, #96e6a1);
+      font-family: 'Segoe UI', sans-serif;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    .cloud, .check {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      opacity: 0.6;
+      animation: floatClouds 40s linear infinite;
+      z-index: 0;
+      max-width: 100vw;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .cloud {
+      background-image: url('https://cdn-icons-png.flaticon.com/512/414/414927.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+    }
+
+    .check {
+      background-image: url('https://cdn-icons-png.flaticon.com/512/190/190411.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+    }
+
+    @keyframes floatClouds {
+      0%   { transform: translateY(100vh); }
+      100% { transform: translateY(-150vh); }
+    }
+
+    .goal-card {
+      background: #ffffffaa;
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
+    }
+
+    .goal-card:hover {
+      transform: scale(1.02);
+    }
+
+    .progress {
+      height: 8px;
+      background-color: #e0e0e0;
+      margin-top: 8px;
+    }
+
+    .progress-bar {
+      background-color: #28a745;
+    }
+  </style>
 </head>
 <body>
-    
+
+  <div class="cloud" style="left: 10%; animation-delay: 0s;"></div>
+  <div class="cloud" style="left: 50%; animation-delay: 10s;"></div>
+  <div class="check" style="left: 30%; animation-delay: 5s;"></div>
+  <div class="check" style="left: 70%; animation-delay: 15s;"></div>
+
+  <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #2d3436;">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="index.html">🎯 RutinApp</a>
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="index.html">Anasayfa</a></li>
+          <li class="nav-item"><a class="nav-link" href="calendar.html">Takvim</a></li>
+          <li class="nav-item"><a class="nav-link" href="notes.html">Notlar</a></li>
+          <li class="nav-item"><a class="nav-link active" href="goals.html">Hedefler</a></li>
+          <li class="nav-item"><a class="nav-link" href="motivation.html">Motivasyon</a></li>
+          <li class="nav-item"><a class="nav-link" href="settings.html">Ayarlar</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container py-5">
+    <div class="row justify-content-center mb-4">
+      <div class="col-md-8">
+        <div class="card p-4">
+          <h4 class="text-center mb-4">🎯 Yeni Hedef Ekle</h4>
+          <form id="goalForm">
+            <div class="mb-3">
+              <input type="text" id="goalTitle" class="form-control" placeholder="Hedef Başlığı" required>
+            </div>
+            <div class="mb-3">
+              <textarea id="goalDesc" class="form-control" rows="3" placeholder="Açıklama"></textarea>
+            </div>
+            <div class="mb-3">
+              <input type="date" id="goalDate" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-success w-100">Ekle</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="row" id="goalList"></div>
+  </div>
+
+  <!-- Edit Modal -->
+  <div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal-dialog">
+      <form class="modal-content" id="editForm">
+        <div class="modal-header">
+          <h5 class="modal-title">Hedefi Düzenle</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="editId">
+          <input type="text" id="editTitle" class="form-control mb-2" placeholder="Başlık" required>
+          <textarea id="editDesc" class="form-control mb-2" rows="3" placeholder="Açıklama"></textarea>
+          <input type="date" id="editDate" class="form-control" required>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Kaydet</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const goalForm = document.getElementById('goalForm');
+    const goalList = document.getElementById('goalList');
+
+    async function fetchGoals() {
+      const res = await fetch('http://localhost:5000/api/goals');
+      return await res.json();
+    }
+
+    async function saveGoal(goal) {
+      await fetch('http://localhost:5000/api/goals', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(goal)
+      });
+    }
+
+    async function updateGoal(id, updatedData) {
+      await fetch(`http://localhost:5000/api/goals/${id}`, {
+        method: 'PATCH',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(updatedData)
+      });
+    }
+
+    async function deleteGoal(id) {
+      await fetch(`http://localhost:5000/api/goals/${id}`, { method: 'DELETE' });
+      renderGoals();
+    }
+
+    goalForm.addEventListener('submit', async e => {
+      e.preventDefault();
+      const newGoal = {
+        title: document.getElementById('goalTitle').value,
+        desc: document.getElementById('goalDesc').value,
+        date: document.getElementById('goalDate').value,
+        percent: 0,
+        completed: false
+      };
+      await saveGoal(newGoal);
+      goalForm.reset();
+      renderGoals();
+    });
+
+    async function renderGoals() {
+      const goals = await fetchGoals();
+      goalList.innerHTML = '';
+      goals.forEach(goal => {
+        const col = document.createElement('div');
+        col.className = 'col-md-4 mb-4';
+        col.innerHTML = `
+          <div class="goal-card h-100">
+            <h5>✅ ${goal.title}</h5>
+            <p>${goal.desc}</p>
+            <small class="text-muted">Hedef Tarihi: ${goal.date}</small>
+            <div class="progress mt-2">
+              <div class="progress-bar" style="width: ${goal.percent}%"></div>
+            </div>
+            <small>${goal.percent}% tamamlandı</small>
+            <input type="range" min="0" max="100" value="${goal.percent}" class="form-range mt-2" onchange="updateProgress('${goal._id}', this.value)">
+            <br>
+            <button class="btn btn-outline-${goal.completed ? 'secondary' : 'success'} btn-sm mt-2" onclick="toggleComplete('${goal._id}', ${goal.completed})">
+              ${goal.completed ? 'Geri Al' : 'Tamamla'}
+            </button>
+            <button class="btn btn-outline-info btn-sm mt-2 ms-2" onclick="openEditModal('${goal._id}', '${goal.title}', '${goal.desc}', '${goal.date}')">Düzenle</button>
+            <button class="btn btn-outline-danger btn-sm mt-2 ms-2" onclick="deleteGoal('${goal._id}')">Sil</button>
+          </div>`;
+        goalList.appendChild(col);
+      });
+    }
+
+    function openEditModal(id, title, desc, date) {
+      document.getElementById('editId').value = id;
+      document.getElementById('editTitle').value = title;
+      document.getElementById('editDesc').value = desc;
+      document.getElementById('editDate').value = date;
+      new bootstrap.Modal(document.getElementById('editModal')).show();
+    }
+
+    document.getElementById('editForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const id = document.getElementById('editId').value;
+      const updated = {
+        title: document.getElementById('editTitle').value,
+        desc: document.getElementById('editDesc').value,
+        date: document.getElementById('editDate').value
+      };
+      await updateGoal(id, updated);
+      bootstrap.Modal.getInstance(document.getElementById('editModal')).hide();
+      renderGoals();
+    });
+
+    async function updateProgress(id, value) {
+      const percent = parseInt(value);
+      await updateGoal(id, { percent, completed: percent === 100 });
+      renderGoals();
+    }
+
+    async function toggleComplete(id, completed) {
+      await updateGoal(id, { completed: !completed, percent: completed ? 0 : 100 });
+      renderGoals();
+    }
+
+    renderGoals();
+  </script>
 </body>
 </html>
