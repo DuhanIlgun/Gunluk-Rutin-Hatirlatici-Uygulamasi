@@ -147,109 +147,126 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    const goalForm = document.getElementById('goalForm');
-    const goalList = document.getElementById('goalList');
+   const token = localStorage.getItem("token");
 
-    async function fetchGoals() {
-      const res = await fetch('http://localhost:5000/api/goals');
-      return await res.json();
+const goalForm = document.getElementById('goalForm');
+const goalList = document.getElementById('goalList');
+
+async function fetchGoals() {
+  const res = await fetch('http://localhost:5000/api/goals', {
+    headers: {
+      'Authorization': `Bearer ${token}`
     }
+  });
+  return await res.json();
+}
 
-    async function saveGoal(goal) {
-      await fetch('http://localhost:5000/api/goals', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(goal)
-      });
+async function saveGoal(goal) {
+  await fetch('http://localhost:5000/api/goals', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify(goal)
+  });
+}
+
+async function updateGoal(id, updatedData) {
+  await fetch(`http://localhost:5000/api/goals/${id}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify(updatedData)
+  });
+}
+
+async function deleteGoal(id) {
+  await fetch(`http://localhost:5000/api/goals/${id}`, {
+    method: 'DELETE',
+    headers: {
+      'Authorization': `Bearer ${token}`
     }
+  });
+  renderGoals();
+}
 
-    async function updateGoal(id, updatedData) {
-      await fetch(`http://localhost:5000/api/goals/${id}`, {
-        method: 'PATCH',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(updatedData)
-      });
-    }
+goalForm.addEventListener('submit', async e => {
+  e.preventDefault();
+  const newGoal = {
+    title: document.getElementById('goalTitle').value,
+    desc: document.getElementById('goalDesc').value,
+    date: document.getElementById('goalDate').value,
+    percent: 0,
+    completed: false
+  };
+  await saveGoal(newGoal);
+  goalForm.reset();
+  renderGoals();
+});
 
-    async function deleteGoal(id) {
-      await fetch(`http://localhost:5000/api/goals/${id}`, { method: 'DELETE' });
-      renderGoals();
-    }
+async function renderGoals() {
+  const goals = await fetchGoals();
+  goalList.innerHTML = '';
+  goals.forEach(goal => {
+    const col = document.createElement('div');
+    col.className = 'col-md-4 mb-4';
+    col.innerHTML = `
+      <div class="goal-card h-100">
+        <h5>✅ ${goal.title}</h5>
+        <p>${goal.desc}</p>
+        <small class="text-muted">Hedef Tarihi: ${goal.date}</small>
+        <div class="progress mt-2">
+          <div class="progress-bar" style="width: ${goal.percent}%"></div>
+        </div>
+        <small>${goal.percent}% tamamlandı</small>
+        <input type="range" min="0" max="100" value="${goal.percent}" class="form-range mt-2" onchange="updateProgress('${goal._id}', this.value)">
+        <br>
+        <button class="btn btn-outline-${goal.completed ? 'secondary' : 'success'} btn-sm mt-2" onclick="toggleComplete('${goal._id}', ${goal.completed})">
+          ${goal.completed ? 'Geri Al' : 'Tamamla'}
+        </button>
+        <button class="btn btn-outline-info btn-sm mt-2 ms-2" onclick="openEditModal('${goal._id}', '${goal.title}', '${goal.desc}', '${goal.date}')">Düzenle</button>
+        <button class="btn btn-outline-danger btn-sm mt-2 ms-2" onclick="deleteGoal('${goal._id}')">Sil</button>
+      </div>`;
+    goalList.appendChild(col);
+  });
+}
 
-    goalForm.addEventListener('submit', async e => {
-      e.preventDefault();
-      const newGoal = {
-        title: document.getElementById('goalTitle').value,
-        desc: document.getElementById('goalDesc').value,
-        date: document.getElementById('goalDate').value,
-        percent: 0,
-        completed: false
-      };
-      await saveGoal(newGoal);
-      goalForm.reset();
-      renderGoals();
-    });
+function openEditModal(id, title, desc, date) {
+  document.getElementById('editId').value = id;
+  document.getElementById('editTitle').value = title;
+  document.getElementById('editDesc').value = desc;
+  document.getElementById('editDate').value = date;
+  new bootstrap.Modal(document.getElementById('editModal')).show();
+}
 
-    async function renderGoals() {
-      const goals = await fetchGoals();
-      goalList.innerHTML = '';
-      goals.forEach(goal => {
-        const col = document.createElement('div');
-        col.className = 'col-md-4 mb-4';
-        col.innerHTML = `
-          <div class="goal-card h-100">
-            <h5>✅ ${goal.title}</h5>
-            <p>${goal.desc}</p>
-            <small class="text-muted">Hedef Tarihi: ${goal.date}</small>
-            <div class="progress mt-2">
-              <div class="progress-bar" style="width: ${goal.percent}%"></div>
-            </div>
-            <small>${goal.percent}% tamamlandı</small>
-            <input type="range" min="0" max="100" value="${goal.percent}" class="form-range mt-2" onchange="updateProgress('${goal._id}', this.value)">
-            <br>
-            <button class="btn btn-outline-${goal.completed ? 'secondary' : 'success'} btn-sm mt-2" onclick="toggleComplete('${goal._id}', ${goal.completed})">
-              ${goal.completed ? 'Geri Al' : 'Tamamla'}
-            </button>
-            <button class="btn btn-outline-info btn-sm mt-2 ms-2" onclick="openEditModal('${goal._id}', '${goal.title}', '${goal.desc}', '${goal.date}')">Düzenle</button>
-            <button class="btn btn-outline-danger btn-sm mt-2 ms-2" onclick="deleteGoal('${goal._id}')">Sil</button>
-          </div>`;
-        goalList.appendChild(col);
-      });
-    }
+document.getElementById('editForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const id = document.getElementById('editId').value;
+  const updated = {
+    title: document.getElementById('editTitle').value,
+    desc: document.getElementById('editDesc').value,
+    date: document.getElementById('editDate').value
+  };
+  await updateGoal(id, updated);
+  bootstrap.Modal.getInstance(document.getElementById('editModal')).hide();
+  renderGoals();
+});
 
-    function openEditModal(id, title, desc, date) {
-      document.getElementById('editId').value = id;
-      document.getElementById('editTitle').value = title;
-      document.getElementById('editDesc').value = desc;
-      document.getElementById('editDate').value = date;
-      new bootstrap.Modal(document.getElementById('editModal')).show();
-    }
+async function updateProgress(id, value) {
+  const percent = parseInt(value);
+  await updateGoal(id, { percent, completed: percent === 100 });
+  renderGoals();
+}
 
-    document.getElementById('editForm').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      const id = document.getElementById('editId').value;
-      const updated = {
-        title: document.getElementById('editTitle').value,
-        desc: document.getElementById('editDesc').value,
-        date: document.getElementById('editDate').value
-      };
-      await updateGoal(id, updated);
-      bootstrap.Modal.getInstance(document.getElementById('editModal')).hide();
-      renderGoals();
-    });
+async function toggleComplete(id, completed) {
+  await updateGoal(id, { completed: !completed, percent: completed ? 0 : 100 });
+  renderGoals();
+}
 
-    async function updateProgress(id, value) {
-      const percent = parseInt(value);
-      await updateGoal(id, { percent, completed: percent === 100 });
-      renderGoals();
-    }
-
-    async function toggleComplete(id, completed) {
-      await updateGoal(id, { completed: !completed, percent: completed ? 0 : 100 });
-      renderGoals();
-    }
-
-    renderGoals();
+renderGoals();
   </script>
 </body>
 </html>

@@ -161,17 +161,17 @@
   <script>
     const tarih = new Date().toLocaleDateString('tr-TR');
     const token = localStorage.getItem("token");
-  
+    const userId = localStorage.getItem("userId");
+
     document.getElementById("cekBtn").addEventListener("click", async () => {
       const res = await fetch("http://localhost:5000/api/motivation/daily", {
         headers: { Authorization: "Bearer " + token }
       });
       const data = await res.json();
       document.getElementById("mesaj").innerText = data.text;
-      // Her çekişte geçmişi güncelle
       gosterMotivasyonGecmisi();
     });
-  
+
     function gosterMotivasyonGecmisi() {
       fetch("http://localhost:5000/api/motivation/history", {
         headers: { Authorization: "Bearer " + token }
@@ -189,46 +189,51 @@
         });
       });
     }
-  
+
     function kaydetMektup() {
       const textarea = document.getElementById("mektup");
       const metin = textarea.value.trim();
       if (!metin) return alert("Lütfen metin giriniz.");
-      const key = "mektup_" + tarih;
+      const key = `mektup_${userId}_${tarih}`;
       localStorage.setItem(key, metin);
-      temizleEski("mektup_");
+      temizleEski(`mektup_${userId}_`);
       gosterMektuplar();
       textarea.value = "";
     }
-  
+
     function gosterMektuplar() {
       const hedef = document.getElementById("oncekiMektuplar");
       hedef.innerHTML = "";
-      Object.keys(localStorage).filter(k => k.startsWith("mektup_")).sort().forEach(k => {
-        const day = k.split('_')[1];
-        const text = localStorage.getItem(k);
-        const div = document.createElement("div");
-        div.className = "mesaj-item";
-        div.innerHTML = `
-          <strong>📆 ${day}</strong><br>✉️ ${text} <br>
-          <button onclick="silMektup('${k}')" class="btn btn-sm btn-danger mt-1">Sil</button>
-        `;
-        hedef.appendChild(div);
-      });
+      Object.keys(localStorage)
+        .filter(k => k.startsWith(`mektup_${userId}_`))
+        .sort()
+        .forEach(k => {
+          const day = k.split('_')[2];
+          const text = localStorage.getItem(k);
+          const div = document.createElement("div");
+          div.className = "mesaj-item";
+          div.innerHTML = `
+            <strong>📆 ${day}</strong><br>✉️ ${text} <br>
+            <button onclick="silMektup('${k}')" class="btn btn-sm btn-danger mt-1">Sil</button>
+          `;
+          hedef.appendChild(div);
+        });
     }
-  
+
     function silMektup(key) {
       localStorage.removeItem(key);
       gosterMektuplar();
     }
-  
+
     function temizleEski(prefix) {
-      const keys = Object.keys(localStorage).filter(k => k.startsWith(prefix)).sort();
+      const keys = Object.keys(localStorage)
+        .filter(k => k.startsWith(prefix))
+        .sort();
       while (keys.length > 10) {
         localStorage.removeItem(keys.shift());
       }
     }
-  
+
     function cekMoodMesaji() {
       const moodValue = document.getElementById('moodRange').value;
       const moodMap = { 0: 'sad', 1: 'neutral', 2: 'happy' };
@@ -245,14 +250,14 @@
           document.getElementById("moodMesaj").innerText = "Mesaj getirilemedi.";
         });
     }
-  
+
     document.getElementById("moodRange").addEventListener("input", e => {
       const moodIcons = { 0: '😢', 1: '😐', 2: '😄' };
       document.getElementById("moodLabel").innerText = moodIcons[e.target.value];
     });
-  
+
     window.onload = () => {
-      gosterMotivasyonGecmisi(); // Yüklenirken geçmişi göster
+      gosterMotivasyonGecmisi();
       gosterMektuplar();
     };
   </script>
