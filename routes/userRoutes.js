@@ -1,4 +1,3 @@
-// routes/userRoutes.js
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
@@ -21,6 +20,7 @@ router.post('/register', async (req, res) => {
 
     res.status(201).json({ message: 'Kayıt başarılı' });
   } catch (err) {
+    console.error("Kayıt Hatası:", err);
     res.status(500).json({ error: 'Sunucu hatası' });
   }
 });
@@ -30,11 +30,15 @@ router.post('/login', async (req, res) => {
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ email });
+    console.log("Gelen kullanıcı:", user);
+
     if (!user) {
       return res.status(401).json({ error: 'Kullanıcı bulunamadı' });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
+    console.log("Şifre eşleşti mi?", isMatch);
+
     if (!isMatch) {
       return res.status(401).json({ error: 'Şifre hatalı' });
     }
@@ -43,6 +47,7 @@ router.post('/login', async (req, res) => {
 
     res.status(200).json({ message: 'Giriş başarılı', token, userId: user._id, email: user.email });
   } catch (err) {
+    console.error("Login Hatası:", err);
     res.status(500).json({ error: 'Sunucu hatası' });
   }
 });
@@ -65,6 +70,7 @@ router.post('/update-password', async (req, res) => {
 
     res.json({ message: 'Şifre güncellendi' });
   } catch (err) {
+    console.error("Şifre güncelleme hatası:", err);
     res.status(401).json({ error: 'Token geçersiz veya süresi dolmuş' });
   }
 });
@@ -96,6 +102,7 @@ router.post('/forgot-password', async (req, res) => {
     res.json({ message: 'Sıfırlama bağlantısı e-posta adresinize gönderildi.' });
 
   } catch (err) {
+    console.error("Şifre sıfırlama hatası:", err);
     res.status(500).json({ error: 'Sunucu hatası' });
   }
 });
@@ -110,6 +117,7 @@ router.post('/reset-password', async (req, res) => {
 
     res.json({ message: "Şifre başarıyla güncellendi." });
   } catch (err) {
+    console.error("Şifre belirleme hatası:", err);
     res.status(400).json({ error: "Geçersiz veya süresi dolmuş bağlantı." });
   }
 });
