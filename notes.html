@@ -137,63 +137,76 @@
   <!-- SCRIPT -->
   <script>
     const notesList = document.getElementById('notesList');
-    const noteForm = document.getElementById('noteForm');
+  const noteForm = document.getElementById('noteForm');
+  const token = localStorage.getItem("token");
 
-    async function renderNotes() {
-      notesList.innerHTML = '';
-      try {
-        const res = await fetch('http://localhost:5000/api/notes');
-        const notes = await res.json();
+  async function renderNotes() {
+    notesList.innerHTML = '';
+    try {
+      const res = await fetch('http://localhost:5000/api/notes', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      const notes = await res.json();
 
-        notes.forEach(note => {
-          const div = document.createElement('div');
-          div.className = 'col-md-4 mb-4';
-          div.innerHTML = `
-            <div class="note-card p-3 h-100">
-              <h5>📌 ${note.title}</h5>
-              <p>${note.text}</p>
-              <small class="text-muted">Tarih: ${new Date(note.date).toLocaleDateString('tr-TR')}</small><br>
-              <button class="btn btn-danger btn-sm mt-2" onclick="deleteNote('${note._id}')">Sil</button>
-            </div>
-          `;
-          notesList.appendChild(div);
-        });
-      } catch (err) {
-        console.error('Notları çekerken hata:', err);
-      }
+      notes.forEach(note => {
+        const div = document.createElement('div');
+        div.className = 'col-md-4 mb-4';
+        div.innerHTML = `
+          <div class="note-card p-3 h-100">
+            <h5>📌 ${note.title}</h5>
+            <p>${note.text}</p>
+            <small class="text-muted">Tarih: ${new Date(note.date).toLocaleDateString('tr-TR')}</small><br>
+            <button class="btn btn-danger btn-sm mt-2" onclick="deleteNote('${note._id}')">Sil</button>
+          </div>
+        `;
+        notesList.appendChild(div);
+      });
+    } catch (err) {
+      console.error('Notları çekerken hata:', err);
     }
+  }
 
-    async function deleteNote(id) {
-      try {
-        await fetch(`http://localhost:5000/api/notes/${id}`, { method: 'DELETE' });
-        renderNotes();
-      } catch (err) {
-        console.error('Not silinirken hata:', err);
-      }
+  async function deleteNote(id) {
+    try {
+      await fetch(`http://localhost:5000/api/notes/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      renderNotes();
+    } catch (err) {
+      console.error('Not silinirken hata:', err);
     }
+  }
 
-    noteForm.addEventListener('submit', async function(e) {
-      e.preventDefault();
-      const title = document.getElementById('noteTitle').value;
-      const text = document.getElementById('noteText').value;
-      const date = document.getElementById('noteDate').value;
+  noteForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const title = document.getElementById('noteTitle').value;
+    const text = document.getElementById('noteText').value;
+    const date = document.getElementById('noteDate').value;
 
-      try {
-        await fetch('http://localhost:5000/api/notes', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ title, text, date })
-        });
-        renderNotes();
-        noteForm.reset();
-        document.getElementById('noteDate').valueAsDate = new Date();
-      } catch (err) {
-        console.error('Not eklerken hata:', err);
-      }
-    });
+    try {
+      await fetch('http://localhost:5000/api/notes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ title, text, date })
+      });
+      renderNotes();
+      noteForm.reset();
+      document.getElementById('noteDate').valueAsDate = new Date();
+    } catch (err) {
+      console.error('Not eklerken hata:', err);
+    }
+  });
 
-    renderNotes();
-    document.getElementById('noteDate').valueAsDate = new Date();
+  renderNotes();
+  document.getElementById('noteDate').valueAsDate = new Date();
   </script>
 </body>
 </html>

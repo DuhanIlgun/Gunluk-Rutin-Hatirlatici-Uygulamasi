@@ -58,15 +58,11 @@
     </div>
     <div class="mb-3">
       <label for="oldPassword">Eski Şifre</label>
-      <input type="password" id="oldPassword" class="form-control">
+      <input type="password" id="oldPassword" class="form-control" placeholder="Eski şifrenizi girin">
     </div>
     <div class="mb-3">
       <label for="newPassword">Yeni Şifre</label>
-      <input type="password" id="newPassword" class="form-control">
-    </div>
-    <div class="form-check">
-      <input class="form-check-input" type="checkbox" id="darkMode">
-      <label class="form-check-label" for="darkMode">Koyu Mod</label>
+      <input type="password" id="newPassword" class="form-control" placeholder="Yeni şifrenizi girin">
     </div>
     <div class="form-check">
       <input class="form-check-input" type="checkbox" id="reminderNotifs">
@@ -82,65 +78,66 @@
   </div>
 
   <script>
-    // Sayfa yüklendiğinde email ve name alanını doldur
     window.addEventListener("DOMContentLoaded", () => {
       const userEmail = localStorage.getItem("userEmail");
       const userName = localStorage.getItem("userName");
       if (userEmail) document.getElementById("email").value = userEmail;
       if (userName) document.getElementById("name").value = userName;
 
-      // Checkboxes durumu
-      document.getElementById("darkMode").checked = localStorage.getItem("darkMode") === "true";
       document.getElementById("reminderNotifs").checked = localStorage.getItem("reminderNotifs") === "true";
       document.getElementById("motivationNotifs").checked = localStorage.getItem("motivationNotifs") === "true";
     });
 
-    // Kaydet butonu
     document.getElementById("saveBtn").addEventListener("click", async () => {
       const name = document.getElementById("name").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const oldPassword = document.getElementById("oldPassword").value;
-      const newPassword = document.getElementById("newPassword").value;
+      const oldPassword = document.getElementById("oldPassword").value.trim();
+      const newPassword = document.getElementById("newPassword").value.trim();
+      const token = localStorage.getItem("token");
 
-      // CheckBox verilerini kaydet
-      localStorage.setItem("darkMode", document.getElementById("darkMode").checked);
+      // Bildirimleri ve adı kaydet
+      localStorage.setItem("userName", name);
       localStorage.setItem("reminderNotifs", document.getElementById("reminderNotifs").checked);
       localStorage.setItem("motivationNotifs", document.getElementById("motivationNotifs").checked);
 
-      localStorage.setItem("userName", name);
-
-      if (!oldPassword || !newPassword) {
-        alert("Lütfen eski ve yeni şifreyi girin.");
+      // Eğer şifre alanları boşsa sadece bildirimleri kaydet
+      if (!oldPassword && !newPassword) {
+        alert("Ayarlar kaydedildi.");
         return;
       }
 
+      // Eğer biri boşsa uyar
+      if ((oldPassword && !newPassword) || (!oldPassword && newPassword)) {
+        alert("Lütfen hem eski hem yeni şifreyi girin.");
+        return;
+      }
+
+      // Şifre güncellemesi
       try {
         const res = await fetch("http://localhost:5000/api/users/update-password", {
           method: "POST",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
           },
-          body: JSON.stringify({ email, oldPassword, newPassword })
+          body: JSON.stringify({ oldPassword, newPassword })
         });
 
         const data = await res.json();
         if (res.ok) {
-          alert("Şifreniz ve bilgileriniz güncellendi.");
+          alert("Şifreniz güncellendi.");
         } else {
-          alert(data.error || "Güncelleme başarısız.");
+          alert(data.error || "Şifre güncellenemedi.");
         }
       } catch (err) {
         alert("Sunucu hatası: " + err.message);
       }
     });
 
-    // Çıkış Yap
     function logout() {
       localStorage.clear();
       window.location.href = "login.html";
     }
 
-    // Hesabı Sil
     function deleteAccount() {
       alert("Bu özellik daha sonra eklenecek.");
     }

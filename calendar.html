@@ -157,44 +157,54 @@
   </footer>
 
   <script>
-     const apiURL = "http://localhost:5000/api/reminders";
+      const apiURL = "http://localhost:5000/api/reminders";
+  const token = localStorage.getItem("token");
   const calendarInput = document.getElementById("calendarDate");
   const calendarTaskList = document.getElementById("calendarTaskList");
 
-  // Takvimden görev çekme
+  // 📅 Takvimden görev çekme
   calendarInput.addEventListener("change", async () => {
     const selectedDate = new Date(calendarInput.value);
-    const response = await fetch(apiURL);
-    const data = await response.json();
 
-    const filtered = data.filter(item => {
-      const taskDate = new Date(item.time);
-      return taskDate.toDateString() === selectedDate.toDateString();
-    });
+    try {
+      const response = await fetch(apiURL, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await response.json();
 
-    calendarTaskList.innerHTML = "";
+      const filtered = data.filter(item => {
+        const taskDate = new Date(item.time);
+        return taskDate.toDateString() === selectedDate.toDateString();
+      });
 
-    if (filtered.length === 0) {
-      calendarTaskList.innerHTML = `<li class="list-group-item text-muted">📭 Seçilen tarihte görev bulunamadı.</li>`;
-      return;
+      calendarTaskList.innerHTML = "";
+
+      if (filtered.length === 0) {
+        calendarTaskList.innerHTML = `<li class="list-group-item text-muted">📭 Seçilen tarihte görev bulunamadı.</li>`;
+        return;
+      }
+
+      filtered.forEach(task => {
+        const li = document.createElement("li");
+        li.className = "list-group-item d-flex justify-content-between align-items-center";
+        li.innerHTML = `
+          <span>✅ ${task.text}</span>
+          <span class="badge bg-secondary">${new Date(task.time).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}</span>
+        `;
+        calendarTaskList.appendChild(li);
+      });
+    } catch (err) {
+      calendarTaskList.innerHTML = `<li class="list-group-item text-danger">❌ Görevler alınamadı.</li>`;
     }
-
-    filtered.forEach(task => {
-      const li = document.createElement("li");
-      li.className = "list-group-item d-flex justify-content-between align-items-center";
-      li.innerHTML = `
-        <span>✅ ${task.text}</span>
-        <span class="badge bg-secondary">${new Date(task.time).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}</span>
-      `;
-      calendarTaskList.appendChild(li);
-    });
   });
 
-  // Balonlara tıklanınca veritabanından motivasyon mesajı çekme
+  // 🎈 Balonlara tıklanınca motivasyon mesajı
   document.querySelectorAll(".bubble").forEach(bubble => {
     bubble.addEventListener("click", async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/motivation/daily");
+        const res = await fetch("http://localhost:5000/api/motivation/daily", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
         const data = await res.json();
         document.getElementById("popup-message").innerText = data.text;
         document.getElementById("popup").style.display = "block";
@@ -204,6 +214,7 @@
       }
     });
   });
+
   </script>
 </body>
 </html>

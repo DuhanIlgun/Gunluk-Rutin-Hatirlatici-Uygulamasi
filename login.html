@@ -85,11 +85,18 @@
 
         const data = await response.json();
         if (response.ok) {
+          // 🔥 Eski kullanıcı verilerini temizle
+          localStorage.clear();
+
+          // ✅ Yeni kullanıcı bilgilerini yaz
           localStorage.setItem("token", data.token);
+          localStorage.setItem("userEmail", data.email);
+          localStorage.setItem("userId", data.userId);
+
           alert("Giriş başarılı!");
           window.location.href = "index.html";
         } else {
-          alert(data.message || "Giriş başarısız");
+          alert(data.error || data.message || "Giriş başarısız");
         }
       } catch (err) {
         alert("Sunucu hatası");
