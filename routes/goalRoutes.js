@@ -20,20 +20,20 @@ function verifyToken(req, res, next) {
   }
 }
 
-// GET - sadece giriş yapan kullanıcının hedefleri
+// ✅ GET - sadece giriş yapan kullanıcının hedefleri
 router.get('/', verifyToken, async (req, res) => {
   try {
-    const goals = await Goal.find({ userId: req.userId }); // ✅ filtreleme eklendi
+    const goals = await Goal.find({ userId: req.userId }); // ✅ sadece kullanıcının hedefleri
     res.json(goals);
   } catch (err) {
     res.status(500).json({ error: 'Hedefler alınamadı' });
   }
 });
 
-// POST - yeni hedef ekle
+// ✅ POST - yeni hedef ekle
 router.post('/', verifyToken, async (req, res) => {
   try {
-    const goal = new Goal({ ...req.body, userId: req.userId }); // ✅ kullanıcıya ait kayıt
+    const goal = new Goal({ ...req.body, userId: req.userId }); // ✅ userId token'dan alınır
     await goal.save();
     res.json(goal);
   } catch (err) {
@@ -41,7 +41,7 @@ router.post('/', verifyToken, async (req, res) => {
   }
 });
 
-// PATCH - hedef güncelle
+// ✅ PATCH - hedef güncelle
 router.patch('/:id', verifyToken, async (req, res) => {
   const { id } = req.params;
   const updatedData = req.body;
@@ -59,7 +59,7 @@ router.patch('/:id', verifyToken, async (req, res) => {
   }
 });
 
-// DELETE - hedef sil
+// ✅ DELETE - hedef sil
 router.delete('/:id', verifyToken, async (req, res) => {
   try {
     const deleted = await Goal.findOneAndDelete({

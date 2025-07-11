@@ -6,7 +6,7 @@ const goalSchema = new mongoose.Schema({
   date: { type: String },
   percent: { type: Number, default: 0 },
   completed: { type: Boolean, default: false },
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true } // ✅ kullanıcıya ait
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true } // 🔐 kullanıcıya özel
 }, { timestamps: true });
 
 module.exports = mongoose.model('Goal', goalSchema);

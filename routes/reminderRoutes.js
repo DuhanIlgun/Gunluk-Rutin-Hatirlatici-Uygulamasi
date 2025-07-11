@@ -20,7 +20,7 @@ function verifyToken(req, res, next) {
   }
 }
 
-// ✅ Kullanıcının hatırlatıcılarını getir
+// ✅ Hatırlatıcıları getir
 router.get("/", verifyToken, async (req, res) => {
   try {
     const reminders = await Reminder.find({ userId: req.userId }).sort({ time: 1 });
@@ -42,7 +42,7 @@ router.post("/", verifyToken, async (req, res) => {
   }
 });
 
-// ✅ Kullanıcıya ait hatırlatıcıyı sil
+// ✅ Hatırlatıcı sil
 router.delete("/:id", verifyToken, async (req, res) => {
   try {
     const deleted = await Reminder.findOneAndDelete({
@@ -52,6 +52,22 @@ router.delete("/:id", verifyToken, async (req, res) => {
 
     if (!deleted) return res.status(404).json({ error: "Hatırlatıcı bulunamadı" });
     res.status(204).end();
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+// ✅ Hatırlatıcıyı tamamlandı olarak işaretle
+router.patch("/:id", verifyToken, async (req, res) => {
+  try {
+    const updated = await Reminder.findOneAndUpdate(
+      { _id: req.params.id, userId: req.userId },
+      { $set: { completed: req.body.completed } },
+      { new: true }
+    );
+
+    if (!updated) return res.status(404).json({ error: "Görev bulunamadı." });
+    res.json(updated);
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
