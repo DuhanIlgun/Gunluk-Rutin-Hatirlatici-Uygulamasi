@@ -32,19 +32,19 @@
 ## 🖼️ Uygulama Görselleri
 
 ### 🔐 Giriş Sayfası
-![Giriş Sayfası](Screenshot%20from%202025-07-11%2022-11-08.png)
+![Giriş Sayfası](Screenshot%20from%202025-07-11%2022-11-24.png)
 
 ### ✅ Görevler Paneli
-![Görevler Paneli](Screenshot%20from%202025-07-11%2022-11-13.png)
+![Görevler Paneli] (Screenshot%20from%202025-07-11%2022-11-13.png)                (Screenshot%20from%202025-07-11%2022-11-08.png)
 
 ### 💬 Motivasyon Sayfası
 ![Motivasyon](Screenshot%20from%202025-07-11%2022-11-17.png)
 
 ### 📅 Takvim ve Hedefler
-![Takvim ve Hedefler](Screenshot%20from%202025-07-11%2022-11-24.png)
+![Takvim ve Hedefler](Screenshot%20from%202025-07-11%2022-11-08.png)
 
 ### 📝 Notlar Sayfası
-![Notlar Sayfası](Screenshot%20from%202025-07-11%2022-11-29.png)
+![Notlar Sayfası](Screenshot%20from%202025-07-11%2022-11-13.png)    
 
 ---
 
