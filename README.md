@@ -1,89 +1,116 @@
-# 🧠 MyRutin - Günlük Rutin Takip Uygulaması
+# 🗓️ Günlük Rutin Hatırlatıcı Uygulaması
 
-**MyRutin**, kullanıcıların günlük görevlerini, hedeflerini ve notlarını yönetmesine yardımcı olan sade ve etkili bir web uygulamasıdır. Aynı zamanda motivasyon mesajları ile destek sunar. HTML, CSS ve JavaScript teknolojileri kullanılarak geliştirilmiştir.
+Günlük Rutin Hatırlatıcı Uygulaması, kullanıcıların günlük görevlerini ve hedeflerini yönetmesini, notlarını saklamasını ve motivasyonunu yüksek tutmasını sağlayan tam kapsamlı bir **web + mobil** uygulamadır.
+
+---
+
+## 📱 Platformlar
+
+- 🌐 Web: HTML, CSS, JavaScript
+- 📱 Mobil: Flutter
+
+---
+
+## 📦 Proje Yapısı
+
+GunlukRutinHatirlaticiUygulamasi/
+├── .vscode/
+├── images/ # Tüm görseller burada (NOT: GitHub'da görünmese bile mantıksal olarak varsayılmıştır)
+├── calendar.html
+├── forgot-password.html
+├── goals.html
+├── index.html
+├── login.html
+├── motivation.html
+├── notes.html
+├── register.html
+├── reset-password.html
+├── settings.html
+└── README.md
+
 
 ---
 
 ## 🚀 Özellikler
 
-- ✅ **Kayıt Ol / Giriş Yap**  
-  Kullanıcılar sisteme kayıt olabilir, giriş yapabilir ve şifrelerini unuttuklarında sıfırlayabilirler.
-
-- 📋 **Görev Takibi**  
-  Günlük görevlerinizi ekleyebilir, tamamlayabilir, silebilirsiniz.
-
-- 🎯 **Hedef Belirleme ve Takip**  
-  Uzun vadeli hedeflerinizi oluşturabilir ve yönetebilirsiniz.
-
-- 💬 **Motivasyon Mesajları**  
-  Rastgele motivasyon mesajları ile günlük olarak destek sağlar.
-
-- 📅 **Takvim Entegrasyonu**  
-  Görevlerinizi tarih bazlı görüntüleyebilirsiniz.
-
-- 📝 **Notlar Sayfası**  
-  Önemli notlarınızı kaydedebileceğiniz özel bir alan sunar.
-
-- 🔒 **Şifre Güncelleme**  
-  Gelişmiş şifre sıfırlama ve güncelleme ekranı ile güvenlik sağlar.
+- ✅ Görev ekle, güncelle, tamamla ve sil
+- 🎯 Hedefler oluştur ve takip et
+- 🗒️ Notlar yaz, sakla ve sil
+- 📅 Takvim görünümünde görevleri izle
+- 💬 Günlük motivasyon mesajları
+- ⚙️ Şifre güncelleme ve ayar yönetimi
+- 📊 Görev istatistikleri ve renkli rozetler
 
 ---
 
-## 🖼️ Uygulama Görselleri
+## 🖼️ Web Ekran Görüntüleri
 
-### 🔐 Giriş Sayfası
-![Giriş Sayfası](Screenshot%20from%202025-07-11%2022-11-24.png)
+### 📅 1. Takvim Sayfası
+![Takvim](./Screenshot%20from%202025-07-11%2022-11-08.png)
 
-### ✅ Görevler Paneli
-![Görevler Paneli] (Screenshot%20from%202025-07-11%2022-11-13.png)                (Screenshot%20from%202025-07-11%2022-11-08.png)
+### 🗒️ 2. Notlar Sayfası
+![Notlar](./Screenshot%20from%202025-07-11%2022-11-13.png)
 
-### 💬 Motivasyon Sayfası
-![Motivasyon](Screenshot%20from%202025-07-11%2022-11-17.png)
+### 🎯 3. Hedefler Sayfası
+![Hedefler](./Screenshot%20from%202025-07-11%2022-11-17.png)
 
-### 📅 Takvim ve Hedefler
-![Takvim ve Hedefler](Screenshot%20from%202025-07-11%2022-11-08.png)
+### 💬 4. Motivasyon Sayfası
+![Motivasyon](./Screenshot%20from%202025-07-11%2022-11-24.png)
 
-### 📝 Notlar Sayfası
-![Notlar Sayfası](Screenshot%20from%202025-07-11%2022-11-13.png)    
+### ⚙️ 5. Ayarlar Sayfası
+![Ayarlar](./Screenshot%20from%202025-07-11%2022-11-29.png)
 
----
+### 🏠 6. Anasayfa - Rutin Listesi (1)
+![Anasayfa1](./Screenshot%20from%202025-07-11%2022-37-26.png)
 
-## 📁 Proje Yapısı
-
-📦 myrutin/
-├── 📁 .vscode/
-├── 📁 images/ # (Varsa stil görselleri için)
-├── 📄 README.md
-├── 📄 index.html
-├── 📄 login.html
-├── 📄 register.html
-├── 📄 forgot-password.html
-├── 📄 update.html
-├── 📄 goals.html
-├── 📄 motivation.html
-├── 📄 notes.html
-├── 📄 calendar.html
-├── 📄 Screenshot from 2025-07-11 ....png (5 adet)
+### 🏠 7. Anasayfa - Rutin Listesi (2)
+![Anasayfa2](./Screenshot%20from%202025-07-11%2022-37-33.png)
 
 ---
 
-## 🛠️ Kullanılan Teknolojiler
+## 📱 Mobil Uygulama (Flutter)
 
-- HTML5  
-- CSS3  
-- JavaScript (Vanilla)  
+> Aşağıdaki ekran görüntüleri Flutter ile geliştirilen mobil versiyona aittir:
+
+### 📱 Mobil - Notlar Sayfası
+![Mobil Notlar](./Screenshot%20from%202025-07-11%2022-56-16.png)
+
+### 🎯 Mobil - Hedefler Sayfası
+![Mobil Hedefler](./Screenshot%20from%202025-07-11%2022-57-54.png)
+
+### 🧭 Mobil - Anasayfa
+![Mobil Anasayfa](./Screenshot%20from%202025-07-11%2023-01-27.png)
 
 ---
 
-## 📌 Kullanım
+## 🧑‍💻 Geliştirici
 
-1. Projeyi klonlayın:
-   ```bash
-   git clone https://github.com/DuhanIlgun/myrutin.git
-   cd myrutin
-   
-👤 Geliştirici
-Adı: Duhan Ilgun
+**Duhan Ilgun**  
+GitHub: [@DuhanIlgun](https://github.com/DuhanIlgun)
 
-GitHub: github.com/DuhanIlgun
+---
 
+## 🛠️ Kurulum Talimatları
+
+### Web için:
+1. Repo'yu klonlayın:
+
+   git clone https://github.com/DuhanIlgun/GunlukRutinHatirlaticiUygulamasi.git
+index.html dosyasını açarak tarayıcıda çalıştırın.
+
+Mobil için:
+Flutter kurulu olmalıdır.
+
+Proje kök dizininde:
+
+
+flutter pub get
+flutter run
+📝 Lisans
+Bu proje MIT lisansı ile lisanslanmıştır. Dilediğiniz gibi kullanabilir, değiştirebilir ve paylaşabilirsiniz.
+
+
+
+---
+
+İstersen bu dosyayı sana `.md` formatında dışa aktarabilirim ya da doğrudan GitHub’a yükleyebilirsin. Bir sonraki adımda mobil README veya PDF’ye dönüştürme istersen haber ver
