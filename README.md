@@ -72,14 +72,15 @@ GunlukRutinHatirlaticiUygulamasi/
 
 > Aşağıdaki ekran görüntüleri Flutter ile geliştirilen mobil versiyona aittir:
 
-### 📱 Mobil - Notlar Sayfası
-![Mobil Notlar](./Screenshot%20from%202025-07-11%2022-56-16.png)
-
-### 🎯 Mobil - Hedefler Sayfası
-![Mobil Hedefler](./Screenshot%20from%202025-07-11%2022-57-54.png)
-
-### 🧭 Mobil - Anasayfa
-![Mobil Anasayfa](./Screenshot%20from%202025-07-11%2023-01-27.png)
+![Mobil 1](./Screenshot%20from%202025-07-11%2022-56-16.png)
+![Mobil 2](./Screenshot%20from%202025-07-11%2022-57-54.png)
+![Mobil 3](./Screenshot%20from%202025-07-11%2022-57-59.png)
+![Mobil 4](./Screenshot%20from%202025-07-11%2022-58-04.png)
+![Mobil 5](./Screenshot%20from%202025-07-11%2022-58-07.png)
+![Mobil 6](./Screenshot%20from%202025-07-11%2022-58-11.png)
+![Mobil 7](./Screenshot%20from%202025-07-11%2023-01-17.png)
+![Mobil 8](./Screenshot%20from%202025-07-11%2023-01-21.png)
+![Mobil 9](./Screenshot%20from%202025-07-11%2023-01-27.png)
 
 ---
 
