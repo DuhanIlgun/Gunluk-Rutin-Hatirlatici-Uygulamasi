@@ -61,7 +61,14 @@
         <label for="password" class="form-label">Şifre</label>
         <input type="password" class="form-control" id="password" required>
       </div>
+      
+      <!-- 🔥 Şifremi Unuttum Linki -->
+      <div class="form-text mb-3 text-end">
+        <a href="forgot-password.html" style="font-size: 0.9rem;">Şifremi Unuttum?</a>
+      </div>
+
       <button type="submit" class="btn btn-login w-100">Giriş Yap</button>
+      
       <div class="form-text">
         Hesabın yok mu? <a href="register.html">Kayıt Ol</a>
       </div>
@@ -77,22 +84,16 @@
       try {
         const response = await fetch("http://localhost:5000/api/users/login", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email, password })
         });
 
         const data = await response.json();
         if (response.ok) {
-          // 🔥 Eski kullanıcı verilerini temizle
           localStorage.clear();
-
-          // ✅ Yeni kullanıcı bilgilerini yaz
           localStorage.setItem("token", data.token);
           localStorage.setItem("userEmail", data.email);
           localStorage.setItem("userId", data.userId);
-
           alert("Giriş başarılı!");
           window.location.href = "index.html";
         } else {
@@ -104,4 +105,3 @@
     });
   </script>
 </body>
-</html>
