@@ -1,5 +1,10 @@
 body {
-    font-family: 'Segoe UI', sans-serif;
+  font-family: 'Poppins', sans-serif;
+  background-image: url('images/Screenshot\ from\ 2025-06-13\ 23-28-21.png'); /* ✅ görsel yolunu güncelledik */
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  color: #333;
 }
 
 #reminderList li {
@@ -16,3 +21,11 @@ body {
 #reminderList button {
     margin-left: 10px;
 }
+  /* html, body {
+      max-width: 100%;
+      overflow-x: hidden !important;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      scrollbar-width: none;
+    } */

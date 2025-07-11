@@ -1,83 +1,406 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ayarlar | RutinApp</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
   <style>
-    body {
-      background: linear-gradient(to right top, #dfe9f3, #ffffff);
-      font-family: 'Segoe UI', sans-serif;
-    }
-    .settings-box {
-      max-width: 500px;
-      margin: 60px auto;
-      background: #fff;
-      padding: 40px;
-      border-radius: 15px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.1);
-    }
-    .btn-save { background-color: #2ecc71; color: white; }
-    .btn-logout { background-color: #f1c40f; color: white; }
-    .btn-delete { background-color: #e74c3c; color: white; }
-    nav {
-      background-color: #2d3436;
-    }
-    nav a {
-      color: white !important;
-    }
+:root {
+  --primary-color: #00cec9;
+  --primary-dark: #00a8a3;
+  --secondary-color: #1abc9c;
+  --accent-color: #00cec9;
+  --success-color: #1abc9c;
+  --danger-color: #c0392b;
+  --warning-color: #34495e;
+  --text-primary: #ffffff;
+  --text-secondary: #ddd;
+  --glass-bg: rgba(0, 0, 0, 0.6);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+/* Animasyonlu sayfa yüklenişi */
+body {
+  opacity: 0;
+  transition: opacity 0.8s ease-in-out;
+  font-family: 'Inter', sans-serif;
+  background-image: url('images/ayarlar.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-attachment: fixed;
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+body.loaded {
+  opacity: 1;
+}
+
+/* Modern Navbar - Siyah tema */
+.navbar {
+  background: rgba(0, 0, 0, 0.95) !important;
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--glass-border);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  padding: 1rem 0;
+  animation: slideDown 0.7s ease-out;
+  z-index: 10;
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-50px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.navbar-brand {
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: var(--accent-color) !important;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: color 0.3s ease;
+}
+
+.navbar-brand:hover {
+  color: var(--success-color) !important;
+}
+
+.navbar-nav .nav-link {
+  color: var(--text-secondary) !important;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  position: relative;
+  margin-left: 10px;
+}
+
+.navbar-nav .nav-link:hover {
+  color: var(--accent-color) !important;
+  background: rgba(0, 206, 201, 0.12);
+  transform: translateY(-1px);
+}
+
+.navbar-nav .nav-link.active {
+  color: var(--accent-color) !important;
+  font-weight: bold;
+  background: rgba(0, 206, 201, 0.12);
+}
+
+.navbar-nav .nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 2px;
+  background: var(--accent-color);
+  border-radius: 1px;
+}
+
+/* Main Container */
+.main-container {
+  flex: 1;
+  padding: 2rem 0;
+  position: relative;
+  z-index: 1;
+}
+
+.settings-box {
+  max-width: 520px;
+  margin: 0 auto;
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  position: relative;
+  overflow: hidden;
+}
+
+.settings-box::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(135deg, var(--accent-color), var(--success-color));
+}
+
+.settings-box h4 {
+  font-weight: 600;
+  margin-bottom: 2rem;
+  color: var(--accent-color);
+}
+
+.form-control {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 12px 16px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-control:focus {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: var(--text-primary);
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(0, 206, 201, 0.2);
+  transform: translateY(-1px);
+}
+
+.form-control::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.form-control:disabled {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #bbb;
+  opacity: 1;
+  cursor: not-allowed;
+}
+
+label, .form-check-label {
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+/* Modern Buttons */
+.btn {
+  border-radius: 12px;
+  font-weight: 600;
+  padding: 12px 24px;
+  transition: all 0.3s ease;
+  border: none;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.btn:hover::before {
+  left: 100%;
+}
+
+.btn-save {
+  background: linear-gradient(135deg, var(--success-color), var(--primary-dark)) !important;
+  color: var(--text-primary);
+}
+
+.btn-save:hover {
+  background: linear-gradient(135deg, var(--primary-dark), var(--success-color)) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(26, 188, 156, 0.3);
+}
+
+.btn-logout {
+  background: linear-gradient(135deg, var(--warning-color), #2c3e50) !important;
+  color: var(--text-primary);
+}
+
+.btn-logout:hover {
+  background: linear-gradient(135deg, #2c3e50, var(--warning-color)) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(52, 73, 94, 0.3);
+}
+
+.btn-delete {
+  background: linear-gradient(135deg, var(--danger-color), #96281b) !important;
+  color: var(--text-primary);
+}
+
+.btn-delete:hover {
+  background: linear-gradient(135deg, #96281b, var(--danger-color)) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(192, 57, 43, 0.3);
+}
+
+/* Form Check Styling */
+.form-check-input {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.form-check-input:checked {
+  background-color: var(--accent-color);
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(0, 206, 201, 0.2);
+}
+
+.form-check-input:focus {
+  box-shadow: 0 0 0 3px rgba(0, 206, 201, 0.2);
+}
+
+.form-check-label {
+  margin-left: 0.5rem;
+  cursor: pointer;
+}
+
+/* Footer - Ana sayfadaki stil */
+footer {
+  background: rgba(0, 0, 0, 0.95);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid var(--glass-border);
+  padding: 1.5rem 0;
+  text-align: center;
+  color: #fff;
+  font-weight: 500;
+  margin-top: auto;
+}
+
+::selection {
+  background: var(--accent-color);
+  color: white;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .settings-box {
+    margin: 1rem;
+    padding: 30px 20px;
+  }
+  
+  .btn {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+}
   </style>
 </head>
 <body>
+  <!-- Modern Navbar -->
   <nav class="navbar navbar-expand-lg navbar-dark">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="index.html">🎯 RutinApp</a>
-      <div class="collapse navbar-collapse">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link" href="index.html">Anasayfa</a></li>
-          <li class="nav-item"><a class="nav-link" href="calendar.html">Takvim</a></li>
-          <li class="nav-item"><a class="nav-link" href="notes.html">Notlar</a></li>
-          <li class="nav-item"><a class="nav-link" href="goals.html">Hedefler</a></li>
-          <li class="nav-item"><a class="nav-link" href="motivation.html">Motivasyon</a></li>
-          <li class="nav-item"><a class="nav-link active" href="#">Ayarlar</a></li>
+    <div class="container">
+      <a class="navbar-brand" href="index.html">
+        <i class="fas fa-cog"></i>
+        RutinApp
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="mainNavbar">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link" href="index.html"><i class="fas fa-home me-1"></i>Anasayfa</a></li>
+          <li class="nav-item"><a class="nav-link" href="calendar.html"><i class="fas fa-calendar me-1"></i>Takvim</a></li>
+          <li class="nav-item"><a class="nav-link" href="notes.html"><i class="fas fa-sticky-note me-1"></i>Notlar</a></li>
+          <li class="nav-item"><a class="nav-link" href="goals.html"><i class="fas fa-bullseye me-1"></i>Hedefler</a></li>
+          <li class="nav-item"><a class="nav-link" href="motivation.html"><i class="fas fa-fire me-1"></i>Motivasyon</a></li>
+          <li class="nav-item"><a class="nav-link active" href="settings.html"><i class="fas fa-cog me-1"></i>Ayarlar</a></li>
         </ul>
       </div>
     </div>
   </nav>
 
-  <div class="settings-box">
-    <h4 class="mb-4 text-center">⚙️ Ayarlar</h4>
-    <div class="mb-3">
-      <label for="name">Ad Soyad</label>
-      <input type="text" id="name" class="form-control">
+  <!-- Main Container -->
+  <div class="main-container">
+    <!-- Ayarlar Kutusu -->
+    <div class="settings-box">
+      <h4 class="mb-4 text-center">
+        <i class="fas fa-cog me-2"></i>
+        Ayarlar
+      </h4>
+      <div class="mb-3">
+        <label for="name">
+          <i class="fas fa-user me-2"></i>
+          Ad Soyad
+        </label>
+        <input type="text" id="name" class="form-control" />
+      </div>
+      <div class="mb-3">
+        <label for="email">
+          <i class="fas fa-envelope me-2"></i>
+          E-posta
+        </label>
+        <input type="email" id="email" class="form-control" disabled />
+      </div>
+      <div class="mb-3">
+        <label for="oldPassword">
+          <i class="fas fa-lock me-2"></i>
+          Eski Şifre
+        </label>
+        <input type="password" id="oldPassword" class="form-control" placeholder="Eski şifrenizi girin" />
+      </div>
+      <div class="mb-3">
+        <label for="newPassword">
+          <i class="fas fa-key me-2"></i>
+          Yeni Şifre
+        </label>
+        <input type="password" id="newPassword" class="form-control" placeholder="Yeni şifrenizi girin" />
+      </div>
+      <div class="form-check mb-2">
+        <input class="form-check-input" type="checkbox" id="reminderNotifs" />
+        <label class="form-check-label" for="reminderNotifs">
+          <i class="fas fa-bell me-2"></i>
+          Hatırlatıcı Bildirimlerini Aç
+        </label>
+      </div>
+      <div class="form-check mb-4">
+        <input class="form-check-input" type="checkbox" id="motivationNotifs" />
+        <label class="form-check-label" for="motivationNotifs">
+          <i class="fas fa-fire me-2"></i>
+          Motivasyon Bildirimlerini Aç
+        </label>
+      </div>
+      <button class="btn btn-save w-100 mb-3" id="saveBtn">
+        <i class="fas fa-save me-2"></i>
+        Kaydet
+      </button>
+      <button class="btn btn-logout w-100 mb-3" onclick="logout()">
+        <i class="fas fa-sign-out-alt me-2"></i>
+        Çıkış Yap
+      </button>
+      <button class="btn btn-delete w-100" onclick="deleteAccount()">
+        <i class="fas fa-trash me-2"></i>
+        Hesabı Sil
+      </button>
     </div>
-    <div class="mb-3">
-      <label for="email">E-posta</label>
-      <input type="email" id="email" class="form-control" disabled>
-    </div>
-    <div class="mb-3">
-      <label for="oldPassword">Eski Şifre</label>
-      <input type="password" id="oldPassword" class="form-control" placeholder="Eski şifrenizi girin">
-    </div>
-    <div class="mb-3">
-      <label for="newPassword">Yeni Şifre</label>
-      <input type="password" id="newPassword" class="form-control" placeholder="Yeni şifrenizi girin">
-    </div>
-    <div class="form-check">
-      <input class="form-check-input" type="checkbox" id="reminderNotifs">
-      <label class="form-check-label" for="reminderNotifs">Hatırlatıcı Bildirimlerini Aç</label>
-    </div>
-    <div class="form-check mb-3">
-      <input class="form-check-input" type="checkbox" id="motivationNotifs">
-      <label class="form-check-label" for="motivationNotifs">Motivasyon Bildirimlerini Aç</label>
-    </div>
-    <button class="btn btn-save w-100 mb-2" id="saveBtn">Kaydet</button>
-    <button class="btn btn-logout w-100 mb-2" onclick="logout()">Çıkış Yap</button>
-    <button class="btn btn-delete w-100" onclick="deleteAccount()">Hesabı Sil</button>
   </div>
 
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <p class="mb-0">
+        <i class="fas fa-heart text-danger me-1"></i>
+        &copy; 2025 RutinApp • Zamanını Kazan
+      </p>
+    </div>
+  </footer>
+
+  <!-- JS -->
   <script>
+    // Sayfa fade-in efekti
+    window.addEventListener("load", () => {
+      document.body.classList.add("loaded");
+    });
+
     window.addEventListener("DOMContentLoaded", () => {
       const userEmail = localStorage.getItem("userEmail");
       const userName = localStorage.getItem("userName");
@@ -88,30 +411,50 @@
       document.getElementById("motivationNotifs").checked = localStorage.getItem("motivationNotifs") === "true";
     });
 
+    function showSelectedNotification() {
+      if (document.getElementById("reminderNotifs").checked) {
+        new Notification("⏰ Hatırlatıcı Aktif!", {
+          body: "Günlük hatırlatıcılarınız açık durumda.",
+          icon: "https://cdn-icons-png.flaticon.com/512/1827/1827349.png"
+        });
+      }
+
+      if (document.getElementById("motivationNotifs").checked) {
+        new Notification("🔥 Motivasyon Aktif!", {
+          body: "Bugün harikasın! Hedeflerine odaklan 💪",
+          icon: "https://cdn-icons-png.flaticon.com/512/747/747376.png"
+        });
+      }
+    }
+
     document.getElementById("saveBtn").addEventListener("click", async () => {
       const name = document.getElementById("name").value.trim();
       const oldPassword = document.getElementById("oldPassword").value.trim();
       const newPassword = document.getElementById("newPassword").value.trim();
       const token = localStorage.getItem("token");
 
-      // Bildirimleri ve adı kaydet
       localStorage.setItem("userName", name);
       localStorage.setItem("reminderNotifs", document.getElementById("reminderNotifs").checked);
       localStorage.setItem("motivationNotifs", document.getElementById("motivationNotifs").checked);
 
-      // Eğer şifre alanları boşsa sadece bildirimleri kaydet
+      if (Notification && Notification.permission !== 'granted') {
+        Notification.requestPermission().then(permission => {
+          if (permission === "granted") showSelectedNotification();
+        });
+      } else {
+        showSelectedNotification();
+      }
+
       if (!oldPassword && !newPassword) {
         alert("Ayarlar kaydedildi.");
         return;
       }
 
-      // Eğer biri boşsa uyar
       if ((oldPassword && !newPassword) || (!oldPassword && newPassword)) {
         alert("Lütfen hem eski hem yeni şifreyi girin.");
         return;
       }
 
-      // Şifre güncellemesi
       try {
         const res = await fetch("http://localhost:5000/api/users/update-password", {
           method: "POST",
@@ -138,8 +481,29 @@
       window.location.href = "login.html";
     }
 
-    function deleteAccount() {
-      alert("Bu özellik daha sonra eklenecek.");
+    async function deleteAccount() {
+      const confirmation = confirm("⚠️ Hesabınızı silmek istediğinize emin misiniz?\n\nBu işlem geri alınamaz ve tüm verileriniz kalıcı olarak silinecek.");
+      if (!confirmation) return;
+
+      const token = localStorage.getItem("token");
+
+      try {
+        const res = await fetch("http://localhost:5000/api/users/delete-account", {
+          method: "DELETE",
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+          alert("✅ Hesabınız başarıyla silindi. Hoşça kal!");
+          localStorage.clear();
+          window.location.href = "register.html";
+        } else {
+          alert(data.error || "Hesap silinemedi.");
+        }
+      } catch (err) {
+        alert("Sunucu hatası: " + err.message);
+      }
     }
   </script>
 </body>

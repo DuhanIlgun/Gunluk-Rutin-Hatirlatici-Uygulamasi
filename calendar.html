@@ -5,86 +5,289 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Takvim | RutinApp</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <style>
-    body {
-      background: linear-gradient(to right, #fceabb, #f8b500);
-      font-family: 'Segoe UI', sans-serif;
-      overflow-x: hidden;
-    }
-    .motivasyon-banner {
-      background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      color: #333;
-      margin-bottom: 30px;
-    }
-    .motivasyon-banner h4 {
-      font-weight: bold;
-    }
-    .card {
-      border-radius: 12px;
-    }
-    .list-group-item {
-      background-color: #fffaf2;
-      border: none;
-      border-bottom: 1px solid #f0d78c;
-    }
-    .bubble {
-      position: absolute;
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      animation: floatBubble 25s infinite ease-in-out;
-      transition: all 0.3s ease-in-out;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      z-index: 5;
-      background-color: var(--bubble-color);
-      color: #fff;
-    }
-    .bubble:hover::after {
-      content: '\1F52A';
-      position: absolute;
-      font-size: 1.5rem;
-      bottom: -20px;
-    }
-    @keyframes floatBubble {
-      0% { transform: translate(0, 100vh); }
-      100% { transform: translate(calc(-50vw + 100vw * var(--rand-x)), -110vh); }
-    }
-    .motivation-popup {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: white;
-      padding: 30px;
-      border-radius: 16px;
-      box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
-      z-index: 9999;
-      text-align: center;
-      font-size: 1.2rem;
-      max-width: 400px;
-      display: none;
-      animation: popUp 0.4s ease;
-    }
-    .motivation-popup .stars {
-      font-size: 1.5rem;
-      color: gold;
-      margin-bottom: 10px;
-    }
-    .motivation-popup button {
-      margin-top: 15px;
-    }
-    @keyframes popUp {
-      from { transform: translate(-50%, -40%) scale(0.8); opacity: 0; }
-      to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-    }
+:root {
+  --primary-color: #232946;
+  --primary-dark: #1a2233;
+  --secondary-color: #8B7355;
+  --accent-color: #B8860B;
+  --success-color: #D4A574;
+  --text-primary: #232946;
+  --text-secondary: #fff;
+  --glass-bg: rgba(35, 41, 70, 0.75);
+  --glass-border: rgba(184, 134, 11, 0.18);
+  --shadow-lg: 0 10px 24px 0 rgba(35,41,70,0.18);
+}
+body {
+  font-family: 'Inter', sans-serif;
+  background-image: url('images/takvim.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-attachment: fixed;
+  color: var(--text-secondary);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  max-width: 100vw;
+  box-sizing: border-box;
+  opacity: 0;
+  animation: fadeInPage 0.9s ease-in-out forwards;
+}
+@keyframes fadeInPage {
+  to { opacity: 1; }
+}
+*, *::before, *::after { box-sizing: inherit; }
+
+/* Modern Navbar */
+.navbar {
+  background: rgba(35, 41, 70, 0.96) !important;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 15px rgba(35,41,70,0.25);
+  padding: 14px 30px;
+  border-bottom: 1.5px solid var(--glass-border);
+  animation: slideDown 0.7s ease-out;
+  z-index: 10;
+}
+@keyframes slideDown {
+  from { transform: translateY(-50px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.navbar-brand {
+  color: var(--accent-color) !important;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.navbar-brand i { color: var(--accent-color); }
+.navbar-nav .nav-link {
+  color: #fff !important;
+  padding: 8px 16px;
+  transition: all 0.3s;
+  font-weight: 500;
+  border-radius: 8px;
+  position: relative;
+}
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
+  color: var(--accent-color) !important;
+  background: rgba(184, 134, 11, 0.10);
+}
+.navbar-nav .nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 18px;
+  height: 2px;
+  background: var(--accent-color);
+  border-radius: 1px;
+}
+
+/* Motivasyon banner */
+.motivasyon-banner {
+  background: var(--glass-bg);
+  border: 1.5px solid var(--glass-border);
+  padding: 24px 18px;
+  border-radius: 18px;
+  box-shadow: var(--shadow-lg);
+  color: #fff;
+  margin-bottom: 32px;
+  backdrop-filter: blur(10px);
+}
+.motivasyon-banner h4 {
+  font-weight: bold;
+  color: var(--accent-color);
+  letter-spacing: 0.5px;
+}
+.motivasyon-banner ul li {
+  margin-bottom: 6px;
+  font-size: 1.08rem;
+  letter-spacing: 0.1px;
+}
+
+/* Kart ve liste öğeleri */
+.card {
+  border-radius: 16px;
+  background: var(--glass-bg);
+  border: 1.5px solid var(--glass-border);
+  box-shadow: var(--shadow-lg);
+  color: #fff;
+  backdrop-filter: blur(10px);
+}
+.card-header {
+  background: linear-gradient(135deg, var(--accent-color), #fffbe6);
+  color: var(--primary-color);
+  font-weight: 600;
+  border: none;
+  border-radius: 16px 16px 0 0;
+  font-size: 1.1rem;
+  letter-spacing: 0.5px;
+}
+.list-group-item {
+  background: rgba(255,255,255,0.92);
+  border: none;
+  border-bottom: 1px solid #eee2c4;
+  color: var(--primary-color);
+  font-size: 1rem;
+  position: relative;
+  padding-left: 44px;
+  border-radius: 0 !important;
+  transition: background 0.2s;
+}
+.list-group-item:last-child { border-bottom: none; }
+.list-group-item::before {
+  content: '\f073';
+  font-family: 'Font Awesome 6 Free';
+  font-weight: 900;
+  position: absolute;
+  left: 14px;
+  top: 14px;
+  color: var(--accent-color);
+  font-size: 1.1rem;
+}
+.list-group-item.text-muted {
+  color: #aaa !important;
+  background: transparent;
+  font-style: italic;
+}
+.list-group-item.text-danger {
+  color: #a94442 !important;
+  background: transparent;
+}
+.list-group-item:hover {
+  background: #f8f5ee;
+}
+.badge {
+  background-color: var(--primary-color);
+  color: #fff;
+  font-size: 0.85rem;
+  padding: 7px 13px;
+  border-radius: 8px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* Input ve tarih seçici */
+.form-control {
+  background: rgba(255,255,255,0.92);
+  border: 2px solid var(--glass-border);
+  border-radius: 12px;
+  font-size: 1.1rem;
+  color: var(--primary-color);
+  padding: 0.85rem 1.1rem;
+  box-shadow: 0 2px 8px rgba(35,41,70,0.08);
+  transition: border 0.2s, box-shadow 0.2s;
+}
+.form-control:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px rgba(184,134,11,0.12);
+  background: #fff;
+  color: var(--primary-color);
+}
+
+/* Balon efektleri */
+.bubble {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  animation: floatBubble 25s infinite ease-in-out;
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  z-index: 5;
+  background-color: var(--primary-color) !important;
+  color: #fff !important;
+  font-weight: bold;
+  text-shadow: 0 0 4px #000;
+  box-shadow: 0 2px 8px rgba(35,41,70,0.18);
+}
+.bubble:hover {
+  background: var(--accent-color) !important;
+  color: var(--primary-color) !important;
+}
+@keyframes floatBubble {
+  0% { transform: translate(0, 100vh); }
+  100% { transform: translate(calc(-50vw + 100vw * var(--rand-x)), -110vh); }
+}
+
+/* Popup mesaj kutusu */
+.motivation-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--primary-color);
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 0 30px rgba(35,41,70,0.3);
+  z-index: 9999;
+  text-align: center;
+  font-size: 1.2rem;
+  max-width: 420px;
+  display: none;
+  color: #fff;
+  animation: popUp 0.4s ease;
+}
+.motivation-popup .stars {
+  font-size: 1.5rem;
+  color: var(--accent-color);
+  margin-bottom: 10px;
+}
+.motivation-popup #popup-message {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #f1f1f1;
+  margin: 10px 0;
+  text-align: center;
+}
+.motivation-popup button {
+  background: linear-gradient(135deg, var(--accent-color), #fffbe6);
+  color: var(--primary-color);
+  font-weight: bold;
+  padding: 6px 18px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  box-shadow: 0 4px 8px rgba(35,41,70,0.18);
+  transition: background 0.3s ease;
+}
+.motivation-popup button:hover {
+  background: linear-gradient(135deg, #fffbe6, var(--accent-color));
+  color: var(--accent-color);
+}
+
+/* Footer */
+footer {
+  margin-top: auto;
+  background: var(--primary-color);
+  padding: 14px 0;
+  text-align: center;
+  color: #fff;
+  letter-spacing: 0.5px;
+  font-size: 1rem;
+  border-top: 1.5px solid var(--glass-border);
+}
+
+@media (max-width: 768px) {
+  .motivasyon-banner, .card, .form-control {
+    border-radius: 12px !important;
+    font-size: 1rem !important;
+  }
+  .motivasyon-banner { padding: 16px 8px; }
+  .card-body { padding: 1rem; }
+}
   </style>
 </head>
 <body>
@@ -97,26 +300,32 @@
   </div>
 
   <!-- BALONLAR -->
-  <div class="bubble" style="--bubble-color: #e74c3c; --rand-x: 0.1; left:5%">🎈</div>
-  <div class="bubble" style="--bubble-color: #3498db; --rand-x: 0.3; left:20%">🎈</div>
-  <div class="bubble" style="--bubble-color: #2ecc71; --rand-x: 0.6; left:35%">🎈</div>
-  <div class="bubble" style="--bubble-color: #f39c12; --rand-x: 0.8; left:50%">🎈</div>
-  <div class="bubble" style="--bubble-color: #9b59b6; --rand-x: 0.2; left:65%">🎈</div>
-  <div class="bubble" style="--bubble-color: #1abc9c; --rand-x: 0.4; left:80%">🎈</div>
-  <div class="bubble" style="--bubble-color: #e67e22; --rand-x: 0.7; left:90%">🎈</div>
+ <div class="bubble" style="--bubble-color: #1B1B1B; --rand-x: 0.1; left:5%"><i class="fas fa-star"></i></div>
+<div class="bubble" style="--bubble-color: #5C4033; --rand-x: 0.3; left:20%"><i class="fas fa-star"></i></div>
+<div class="bubble" style="--bubble-color: #1B1B1B; --rand-x: 0.6; left:35%"><i class="fas fa-star"></i></div>
+<div class="bubble" style="--bubble-color: #5C4033; --rand-x: 0.8; left:50%"><i class="fas fa-star"></i></div>
+<div class="bubble" style="--bubble-color: #1B1B1B; --rand-x: 0.2; left:65%"><i class="fas fa-star"></i></div>
+<div class="bubble" style="--bubble-color: #5C4033; --rand-x: 0.4; left:80%"><i class="fas fa-star"></i></div>
+<div class="bubble" style="--bubble-color: #1B1B1B; --rand-x: 0.7; left:90%"><i class="fas fa-star"></i></div>
 
   <!-- NAVBAR -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="index.html">🕒 RutinApp</a>
-      <div class="collapse navbar-collapse">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link" href="index.html">Anasayfa</a></li>
-          <li class="nav-item"><a class="nav-link active" href="calendar.html">Takvim</a></li>
-          <li class="nav-item"><a class="nav-link" href="notes.html">Notlar</a></li>
-          <li class="nav-item"><a class="nav-link" href="goals.html">Hedefler</a></li>
-          <li class="nav-item"><a class="nav-link" href="motivation.html">Motivasyon</a></li>
-          <li class="nav-item"><a class="nav-link" href="settings.html">Ayarlar</a></li>
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">
+        <i class="fas fa-calendar-alt"></i>
+        RutinApp
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="mainNavbar">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link" href="index.html"><i class="fas fa-home me-1"></i>Anasayfa</a></li>
+          <li class="nav-item"><a class="nav-link active" href="calendar.html"><i class="fas fa-calendar me-1"></i>Takvim</a></li>
+          <li class="nav-item"><a class="nav-link" href="notes.html"><i class="fas fa-sticky-note me-1"></i>Notlar</a></li>
+          <li class="nav-item"><a class="nav-link" href="goals.html"><i class="fas fa-bullseye me-1"></i>Hedefler</a></li>
+          <li class="nav-item"><a class="nav-link" href="motivation.html"><i class="fas fa-fire me-1"></i>Motivasyon</a></li>
+          <li class="nav-item"><a class="nav-link" href="settings.html"><i class="fas fa-cog me-1"></i>Ayarlar</a></li>
         </ul>
       </div>
     </div>
@@ -125,70 +334,59 @@
   <!-- TAKVİM SAYFASI -->
   <div class="container py-5">
     <div class="motivasyon-banner text-center mb-5">
-      <h4>🎯 Günlük İlham</h4>
+      <h4><i class="fas fa-lightbulb me-2"></i>Günlük İlham</h4>
       <ul class="list-unstyled mt-3">
         <li>✨ Bugün bir adım at, yarın gururla hatırla.</li>
         <li>🔥 Zorluklar seni durdurmasın, seni büyütsün.</li>
         <li>💪 Rutinlerin gücüyle hedeflerine ulaş!</li>
       </ul>
     </div>
-
-    <h2 class="text-center mb-4">📅 Görev Takvimi</h2>
+    <h2 class="text-center mb-4" style="color:var(--accent-color)"><i class="fas fa-calendar-alt me-2"></i>Görev Takvimi</h2>
     <p class="text-center">Aşağıdan bir tarih seçerek o güne ait görevlerini görüntüle:</p>
-
     <div class="row justify-content-center mb-4">
       <div class="col-md-6">
         <input type="date" id="calendarDate" class="form-control form-control-lg shadow-sm">
       </div>
     </div>
-
     <div class="card shadow">
-      <div class="card-header bg-warning bg-gradient text-dark">
-        <h5 class="mb-0">🗓 Seçilen Günün Görevleri</h5>
+      <div class="card-header">
+        <h5 class="mb-0"><i class="fas fa-list me-2"></i>Seçilen Günün Görevleri</h5>
       </div>
       <ul id="calendarTaskList" class="list-group list-group-flush">
         <li class="list-group-item text-muted">📭 Henüz görev yok...</li>
       </ul>
     </div>
   </div>
-
-  <footer class="text-center text-white bg-dark py-3 mt-5">
+  <footer>
     <small>&copy; 2025 RutinApp • Zamanını Altına Çevir ✨</small>
   </footer>
-
   <script>
       const apiURL = "http://localhost:5000/api/reminders";
   const token = localStorage.getItem("token");
   const calendarInput = document.getElementById("calendarDate");
   const calendarTaskList = document.getElementById("calendarTaskList");
-
   // 📅 Takvimden görev çekme
   calendarInput.addEventListener("change", async () => {
     const selectedDate = new Date(calendarInput.value);
-
     try {
       const response = await fetch(apiURL, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await response.json();
-
       const filtered = data.filter(item => {
         const taskDate = new Date(item.time);
         return taskDate.toDateString() === selectedDate.toDateString();
       });
-
       calendarTaskList.innerHTML = "";
-
       if (filtered.length === 0) {
         calendarTaskList.innerHTML = `<li class="list-group-item text-muted">📭 Seçilen tarihte görev bulunamadı.</li>`;
         return;
       }
-
       filtered.forEach(task => {
         const li = document.createElement("li");
         li.className = "list-group-item d-flex justify-content-between align-items-center";
         li.innerHTML = `
-          <span>✅ ${task.text}</span>
+          <span> ${task.text}</span>
           <span class="badge bg-secondary">${new Date(task.time).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}</span>
         `;
         calendarTaskList.appendChild(li);
@@ -197,7 +395,6 @@
       calendarTaskList.innerHTML = `<li class="list-group-item text-danger">❌ Görevler alınamadı.</li>`;
     }
   });
-
   // 🎈 Balonlara tıklanınca motivasyon mesajı
   document.querySelectorAll(".bubble").forEach(bubble => {
     bubble.addEventListener("click", async () => {
@@ -214,7 +411,6 @@
       }
     });
   });
-
   </script>
 </body>
 </html>

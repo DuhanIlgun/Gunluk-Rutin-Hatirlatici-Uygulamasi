@@ -4,152 +4,831 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Anasayfa | RutinApp</title>
+
+  <!-- Bootstrap + Fonts -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+ <style>
+  :root {
+    --primary-color: #232946; /* Lacivert */
+    --primary-dark: #1a2233; /* Daha koyu lacivert */
+    --secondary-color: #8B7355; /* Kahverengi */
+    --accent-color: #B8860B; /* Altın */
+    --success-color: #D4A574; /* Altın açık */
+    --warning-color: #B8860B;
+    --danger-color: #A94442;
+    --text-primary: #232946;
+    --text-secondary: #4A4A4A;
+    --border-color: rgba(35, 41, 70, 0.2);
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.1);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.2), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --glass-bg: rgba(255, 255, 255, 0.85);
+    --glass-border: rgba(35, 41, 70, 0.2);
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background-image: url('images/anasayfa.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-attachment: fixed;
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+    position: relative;
+  }
+
+  /* Overlay for better readability */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(35, 41, 70, 0.4) 0%, rgba(139, 115, 85, 0.15) 100%);
+    z-index: -1;
+  }
+
+  /* Modern Navbar */
+  .navbar {
+    background: rgba(35, 41, 70, 0.92) !important;
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-md);
+    padding: 1rem 0;
+  }
+
+  .navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--accent-color) !important;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .navbar-nav .nav-link {
+    color: #fff !important;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .navbar-nav .nav-link:hover,
+  .navbar-nav .nav-link.active {
+    color: var(--accent-color) !important;
+    background: rgba(184, 134, 11, 0.12);
+    transform: translateY(-1px);
+  }
+
+  .navbar-nav .nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 2px;
+    background: var(--accent-color);
+    border-radius: 1px;
+  }
+
+  /* Main Container */
+  .main-container {
+    padding: 2rem 0;
+    min-height: calc(100vh - 80px);
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Modern Cards with Glassmorphism */
+  .card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    box-shadow: var(--shadow-lg);
+    transition: all 0.3s ease;
+    overflow: hidden;
+    color: var(--text-primary);
+  }
+
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.4), 0 10px 10px -5px rgb(0 0 0 / 0.2);
+    border-color: rgba(35, 41, 70, 0.4);
+  }
+
+  .card-header {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: var(--accent-color);
+    font-weight: 600;
+    border: none;
+    padding: 1.25rem 1.5rem;
+    backdrop-filter: blur(10px);
+  }
+
+  .card-body {
+    padding: 1.5rem;
+  }
+
+  /* Form Elements */
+  .form-control {
+    background: rgba(255, 255, 255, 0.95);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    color: var(--text-primary);
+  }
+
+  .form-control:focus {
+    background: #fff;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(35, 41, 70, 0.1);
+    color: var(--text-primary);
+  }
+
+  .form-control::placeholder {
+    color: var(--text-secondary);
+  }
+
+  .input-group-text {
+    background: rgba(255, 255, 255, 0.95);
+    border: 2px solid var(--border-color);
+    border-right: none;
+    color: var(--primary-color);
+  }
+
+  /* Buttons */
+  .btn {
+    border-radius: 12px;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    transition: all 0.3s ease;
+    border: none;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(184, 134, 11, 0.15), transparent);
+    transition: left 0.5s;
+  }
+
+  .btn:hover::before {
+    left: 100%;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: #fff;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .btn-success {
+    background: linear-gradient(135deg, var(--accent-color), var(--success-color));
+    color: #fff;
+  }
+
+  .btn-danger {
+    background: var(--primary-color);
+    color: #fff;
+    border: 2px solid var(--primary-color);
+    transition: all 0.3s;
+  }
+  .btn-danger:hover, .btn-danger:focus {
+    background: #fff;
+    color: var(--primary-color);
+    border: 2px solid var(--accent-color);
+  }
+  .btn-danger i {
+    color: #fff;
+    transition: color 0.3s;
+  }
+  .btn-danger:hover i, .btn-danger:focus i {
+    color: var(--accent-color);
+  }
+
+  .btn-outline-secondary {
+    background: rgba(255, 255, 255, 0.95);
+    color: var(--primary-color);
+    border: 2px solid var(--border-color);
+  }
+
+  .btn-outline-secondary:hover {
+    background: rgba(35, 41, 70, 0.08);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+  }
+
+  /* Task Cards */
+  .task-card {
+    border-left: 4px solid var(--primary-color);
+    margin-bottom: 1rem;
+  }
+
+  .task-card.success {
+    border-left-color: var(--accent-color);
+  }
+
+  .task-card.warning {
+    border-left-color: var(--warning-color);
+  }
+
+  .task-card.danger {
+    border-left-color: var(--danger-color);
+  }
+
+  .task-card .card-title {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+  }
+
+  .task-card .card-text {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+  }
+
+  /* Stats Section */
+  .stats-section {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.85));
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .stats-title {
+    color: var(--primary-color);
+    font-weight: 700;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+
+  /* Search and Filter Section */
+  .search-filter-section {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--glass-border);
+  }
+
+  /* Add Task Section */
+  .add-task-section {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--glass-border);
+  }
+
+  .add-task-title {
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  /* Footer */
+  footer {
+    background: rgba(35, 41, 70, 0.92);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid var(--glass-border);
+    padding: 1.5rem 0;
+    text-align: center;
+    color: #fff;
+    font-weight: 500;
+  }
+
+  /* Animations */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .fade-in-up {
+    animation: fadeInUp 0.6s ease-out;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .main-container {
+      padding: 1rem 0;
+    }
+    
+    .card-body {
+      padding: 1rem;
+    }
+    
+    .stats-section {
+      padding: 1.5rem;
+    }
+  }
+
+  /* Loading States */
+  .loading {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  /* Empty State */
+  .empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--text-secondary);
+  }
+
+  .empty-state i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+  }
+
+  /* Badge styling */
+  .badge {
+    font-weight: 500;
+  }
+
+  .badge.bg-success {
+    background: var(--accent-color) !important;
+  }
+
+  .badge.bg-warning {
+    background: var(--warning-color) !important;
+  }
+
+  .badge.bg-danger {
+    background: var(--danger-color) !important;
+  }
+
+  /* Chart customization for natural theme */
+  .chart-container {
+    position: relative;
+    height: 300px;
+  }
+
+  /* Text colors for better readability */
+  .text-primary {
+    color: var(--primary-color) !important;
+  }
+
+  .text-success {
+    color: var(--accent-color) !important;
+  }
+
+  .text-warning {
+    color: var(--warning-color) !important;
+  }
+
+  .text-danger {
+    color: var(--danger-color) !important;
+  }
+</style>
 </head>
-<body class="bg-light">
+<body>
 
-  <!-- NAVBAR -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="index.html">🕒 RutinApp</a>
-      <div class="collapse navbar-collapse">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link active" href="index.html">Anasayfa</a></li>
-          <li class="nav-item"><a class="nav-link" href="calendar.html">Takvim</a></li>
-          <li class="nav-item"><a class="nav-link" href="notes.html">Notlar</a></li>
-          <li class="nav-item"><a class="nav-link" href="goals.html">Hedefler</a></li>
-          <li class="nav-item"><a class="nav-link" href="motivation.html">Motivasyon</a></li>
-          <li class="nav-item"><a class="nav-link" href="settings.html">Ayarlar</a></li>
-        </ul>
-      </div>
-    </div>
-  </nav>
-
-  <!-- MAIN CONTENT -->
-  <div class="container py-4">
-    <h2 class="mb-3">📌 Bugünkü Rutinini Yönet</h2>
-
-    <!-- Hatırlatıcı Formu -->
-    <div class="card shadow-sm mb-4">
-      <div class="card-body">
-        <form id="reminderForm" class="row g-3">
-          <div class="col-md-6">
-            <input type="text" id="reminderInput" class="form-control" placeholder="Görev: kitap oku, spor yap..." required />
-          </div>
-          <div class="col-md-4">
-            <input type="datetime-local" id="reminderTime" class="form-control" required />
-          </div>
-          <div class="col-md-2">
-            <button type="submit" class="btn btn-success w-100">Ekle</button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <!-- Görev Listesi -->
-    <div class="card shadow-sm">
-      <div class="card-header bg-white">
-        <h5 class="mb-0">📋 Görev Listesi</h5>
-      </div>
-      <ul id="reminderList" class="list-group list-group-flush">
-        <li class="list-group-item text-muted">⏳ Yükleniyor...</li>
+<!-- Modern Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">
+      <i class="fas fa-clock"></i>
+      RutinApp
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="mainNavbar">
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link active" href="index.html"><i class="fas fa-home me-1"></i>Anasayfa</a></li>
+        <li class="nav-item"><a class="nav-link" href="calendar.html"><i class="fas fa-calendar me-1"></i>Takvim</a></li>
+        <li class="nav-item"><a class="nav-link" href="notes.html"><i class="fas fa-sticky-note me-1"></i>Notlar</a></li>
+        <li class="nav-item"><a class="nav-link" href="goals.html"><i class="fas fa-bullseye me-1"></i>Hedefler</a></li>
+        <li class="nav-item"><a class="nav-link" href="motivation.html"><i class="fas fa-fire me-1"></i>Motivasyon</a></li>
+        <li class="nav-item"><a class="nav-item"><a class="nav-link" href="settings.html"><i class="fas fa-cog me-1"></i>Ayarlar</a></li>
       </ul>
     </div>
   </div>
+</nav>
 
-  <!-- FOOTER -->
-  <footer class="text-center text-muted py-4 mt-5">
-    <small>&copy; 2025 RutinApp • Zamanını Kazan</small>
-  </footer>
+<div class="main-container">
+  <div class="container">
+    <!-- Stats Section -->
+    <div class="stats-section fade-in-up">
+      <h1 class="stats-title">
+        <i class="fas fa-tasks me-2 text-primary"></i>
+        Bugünkü Rutinini Yönet
+      </h1>
+    </div>
 
-  <script>
-    const token = localStorage.getItem("token");
-    const apiURL = "http://localhost:5000/api/reminders";
-    const form = document.getElementById("reminderForm");
-    const list = document.getElementById("reminderList");
+    <!-- Weekly Chart -->
+    <div class="card fade-in-up">
+      <div class="card-header">
+        <i class="fas fa-chart-bar me-2"></i>
+        Haftalık Görev İstatistiği
+      </div>
+      <div class="card-body">
+        <div class="chart-container">
+          <canvas id="weeklyChart"></canvas>
+        </div>
+      </div>
+    </div>
 
-    if (!token) {
-      alert("Giriş yapmanız gerekiyor.");
-      window.location.href = "login.html";
-    }
+    <!-- Search and Filter Section -->
+    <div class="search-filter-section fade-in-up">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div class="input-group">
+            <span class="input-group-text"><i class="fas fa-search"></i></span>
+            <input type="text" id="searchInput" class="form-control" placeholder="Görev ara...">
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="input-group">
+            <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+            <input type="date" id="filterDate" class="form-control">
+          </div>
+        </div>
+        <div class="col-md-2">
+          <button class="btn btn-outline-secondary w-100" onclick="clearFilters()">
+            <i class="fas fa-times me-1"></i>Temizle
+          </button>
+        </div>
+      </div>
+    </div>
 
-    // Görevleri listele
-    async function loadReminders() {
-      try {
-        const res = await fetch(apiURL, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        const reminders = await res.json();
-        list.innerHTML = "";
+    <!-- Add Task Section -->
+    <div class="add-task-section fade-in-up">
+      <h5 class="add-task-title">
+        <i class="fas fa-plus-circle text-primary"></i>
+        Yeni Görev Ekle
+      </h5>
+      <form id="reminderForm" class="row g-3">
+        <div class="col-md-6">
+          <div class="input-group">
+            <span class="input-group-text"><i class="fas fa-tasks"></i></span>
+            <input type="text" id="reminderInput" class="form-control" placeholder="Görev: kitap oku, spor yap..." required />
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="input-group">
+            <span class="input-group-text"><i class="fas fa-clock"></i></span>
+            <input type="datetime-local" id="reminderTime" class="form-control" required />
+          </div>
+        </div>
+        <div class="col-md-2">
+          <button type="submit" class="btn btn-success w-100">
+            <i class="fas fa-plus me-1"></i>Ekle
+          </button>
+        </div>
+      </form>
+    </div>
 
-        if (reminders.length === 0) {
-          list.innerHTML = `<li class="list-group-item text-muted">Henüz görev eklenmedi.</li>`;
-          return;
-        }
+    <!-- Task Cards -->
+    <div id="reminderCards" class="row g-3"></div>
+  </div>
+</div>
 
-        reminders.forEach(reminder => {
-          const li = document.createElement("li");
-          li.className = "list-group-item d-flex justify-content-between align-items-center";
-          li.innerHTML = `
-            <span>✅ ${reminder.text}<br><small class="text-muted">${new Date(reminder.time).toLocaleString("tr-TR")}</small></span>
-            <button class="btn btn-sm btn-danger" onclick="deleteReminder('${reminder._id}')">Sil</button>
-          `;
-          list.appendChild(li);
-        });
-      } catch (err) {
-        list.innerHTML = `<li class="list-group-item text-danger">Görevler alınamadı ❌</li>`;
-      }
-    }
+<!-- Modern Footer -->
+<footer>
+  <div class="container">
+    <p class="mb-0">
+      <i class="fas fa-heart text-danger me-1"></i>
+      &copy; 2025 RutinApp • Zamanını Kazan
+    </p>
+  </div>
+</footer>
 
-    // Yeni görev ekle
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const text = document.getElementById("reminderInput").value.trim();
-      const time = document.getElementById("reminderTime").value;
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-      if (!text || !time) return alert("Boş alan bırakmayın.");
+<script>
+const token = localStorage.getItem("token");
+const apiURL = "http://localhost:5000/api/reminders";
+const form = document.getElementById("reminderForm");
+const cardArea = document.getElementById("reminderCards");
+const searchInput = document.getElementById("searchInput");
+const filterDate = document.getElementById("filterDate");
 
-      try {
-        const res = await fetch(apiURL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`
-          },
-          body: JSON.stringify({ text, time })
-        });
+let allReminders = [];
+let chartInstance;
 
-        if (res.ok) {
-          form.reset();
-          loadReminders();
-        } else {
-          const errData = await res.json();
-          alert("Ekleme hatası: " + (errData.error || "Sunucu hatası"));
-        }
-      } catch (err) {
-        alert("Sunucuya ulaşılamadı.");
-      }
+if (!token) {
+  alert("Giriş yapmanız gerekiyor.");
+  window.location.href = "login.html";
+}
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const text = document.getElementById("reminderInput").value.trim();
+  const time = document.getElementById("reminderTime").value;
+  if (!text || !time) return;
+
+  // Loading state
+  const submitBtn = form.querySelector('button[type="submit"]');
+  const originalText = submitBtn.innerHTML;
+  submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Ekleniyor...';
+  submitBtn.disabled = true;
+
+  try {
+    const res = await fetch(apiURL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({ text, time })
     });
 
-    // Görev sil
-    async function deleteReminder(id) {
-      if (!confirm("Bu görevi silmek istediğine emin misin?")) return;
+    if (res.ok) {
+      form.reset();
+      loadReminders();
+      // Success feedback
+      submitBtn.innerHTML = '<i class="fas fa-check me-1"></i>Eklendi!';
+      setTimeout(() => {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+      }, 2000);
+    } else {
+      const err = await res.json();
+      alert("Ekleme hatası: " + err.error);
+      submitBtn.innerHTML = originalText;
+      submitBtn.disabled = false;
+    }
+  } catch (error) {
+    alert("Sunucu hatası");
+    submitBtn.innerHTML = originalText;
+    submitBtn.disabled = false;
+  }
+});
 
-      try {
-        await fetch(`${apiURL}/${id}`, {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
-        loadReminders();
-      } catch (err) {
-        alert("Silme işlemi başarısız.");
-      }
+async function deleteReminder(id) {
+  if (!confirm("Bu görevi silmek istediğine emin misin?")) return;
+  
+  try {
+    await fetch(`${apiURL}/${id}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    loadReminders();
+  } catch (error) {
+    alert("Silme hatası");
+  }
+}
+
+function clearFilters() {
+  searchInput.value = "";
+  filterDate.value = "";
+  renderReminders(allReminders);
+}
+
+function renderReminders(data) {
+  cardArea.innerHTML = "";
+  const search = searchInput.value.toLowerCase();
+  const selectedDate = filterDate.value;
+
+  const filtered = data.filter(item => {
+    const matchesText = item.text.toLowerCase().includes(search);
+    const matchesDate = selectedDate ? item.time.startsWith(selectedDate) : true;
+    return matchesText && matchesDate;
+  });
+
+  if (filtered.length === 0) {
+    cardArea.innerHTML = `
+      <div class="col-12">
+        <div class="empty-state">
+          <i class="fas fa-search"></i>
+          <h5>Görev bulunamadı</h5>
+          <p>Farklı arama kriterleri deneyin veya yeni görev ekleyin.</p>
+        </div>
+      </div>`;
+    return;
+  }
+
+  filtered.forEach((reminder, index) => {
+    const time = new Date(reminder.time);
+    const now = new Date();
+    let status = "warning";
+    let statusIcon = "fas fa-clock";
+    let statusText = "Bekliyor";
+    
+    if (time < now) {
+      status = "success";
+      statusIcon = "fas fa-check-circle";
+      statusText = "Tamamlandı";
+    }
+    if (reminder.text.toLowerCase().includes("iptal")) {
+      status = "danger";
+      statusIcon = "fas fa-times-circle";
+      statusText = "İptal";
     }
 
-    // Sayfa yüklendiğinde görevleri getir
-    loadReminders();
-  </script>
+    const card = document.createElement("div");
+    card.className = "col-md-6 col-lg-4";
+    card.style.animationDelay = `${index * 0.1}s`;
+    card.innerHTML = `
+      <div class="card task-card ${status} fade-in-up">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <div class="d-flex align-items-center">
+              <i class="${statusIcon} text-${status} me-2"></i>
+              <span class="badge bg-${status}">${statusText}</span>
+            </div>
+            <button class="btn btn-sm btn-danger" onclick="deleteReminder('${reminder._id}')" title="Sil">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+          <h6 class="card-title">${reminder.text}</h6>
+          <p class="card-text">
+            <i class="fas fa-calendar-alt me-1"></i>
+            ${time.toLocaleString("tr-TR")}
+          </p>
+        </div>
+      </div>`;
+    cardArea.appendChild(card);
+  });
+}
+
+function drawWeeklyChart(data) {
+  const today = new Date();
+  const labels = [];
+  const counts = [];
+
+  for (let i = 6; i >= 0; i--) {
+    const date = new Date(today);
+    date.setDate(today.getDate() - i);
+    const dateStr = date.toISOString().split('T')[0];
+    labels.push(date.toLocaleDateString("tr-TR", { weekday: 'short' }));
+
+    const count = data.filter(reminder =>
+      reminder.time.startsWith(dateStr)
+    ).length;
+
+    counts.push(count);
+  }
+
+  const ctx = document.getElementById("weeklyChart").getContext("2d");
+
+  if (chartInstance) chartInstance.destroy();
+
+  chartInstance = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Görev Sayısı',
+        data: counts,
+        backgroundColor: 'rgba(139, 115, 85, 0.8)',
+        borderColor: 'rgba(139, 115, 85, 1)',
+        borderWidth: 2,
+        borderRadius: 8,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: false
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: { 
+            stepSize: 1,
+            color: '#2F2F2F'
+          },
+          grid: {
+            color: 'rgba(139, 115, 85, 0.1)'
+          }
+        },
+        x: {
+          ticks: {
+            color: '#2F2F2F'
+          },
+          grid: {
+            color: 'rgba(139, 115, 85, 0.1)'
+          }
+        }
+      }
+    }
+  });
+}
+
+// Görev zamanlarını kontrol edip bildirim gösteren fonksiyon
+function startTaskReminderChecker(reminders) {
+  setInterval(() => {
+    const now = new Date();
+    const currentTime = now.toTimeString().slice(0, 5);
+
+    reminders.forEach(reminder => {
+      const rawTime = reminder.time.replace(" ", "T");
+      const reminderDateTime = new Date(rawTime);
+      const reminderTime = reminderDateTime.toTimeString().slice(0, 5);
+
+      if (
+        !reminder.alerted &&
+        reminderDateTime.toDateString() === now.toDateString() &&
+        reminderTime === currentTime
+      ) {
+        if (Notification.permission === "granted") {
+          new Notification(`🕒 Görev Zamanı!`, {
+            body: reminder.text,
+            icon: "https://cdn-icons-png.flaticon.com/512/1827/1827349.png"
+          });
+        }
+        reminder.alerted = true;
+      }
+    });
+  }, 60000);
+}
+
+// Bildirim izni
+if (Notification && Notification.permission !== "granted") {
+  Notification.requestPermission();
+}
+
+// Görevleri yükle
+async function loadReminders() {
+  try {
+    const res = await fetch(apiURL, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    allReminders = await res.json();
+    allReminders.forEach(r => r.alerted = false); // resetle
+    renderReminders(allReminders);
+    drawWeeklyChart(allReminders);
+    if (localStorage.getItem("reminderNotifs") === "true") {
+      startTaskReminderChecker(allReminders);
+    }
+  } catch (error) {
+    console.error("Görevler yüklenirken hata:", error);
+  }
+}
+
+searchInput.addEventListener("input", () => renderReminders(allReminders));
+filterDate.addEventListener("change", () => renderReminders(allReminders));
+
+// Sayfa yüklendiğinde animasyonları başlat
+document.addEventListener('DOMContentLoaded', function() {
+  loadReminders();
+  
+  // Smooth scroll için
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      e.preventDefault();
+      document.querySelector(this.getAttribute('href')).scrollIntoView({
+        behavior: 'smooth'
+      });
+    });
+  });
+});
+</script>
 </body>
 </html>
