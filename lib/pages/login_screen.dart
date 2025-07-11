@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../main.dart'; // HomePage yönlendirmesi için
-import 'register_screen.dart'; // Kayıt ekranı
+import 'register_screen.dart';
 import 'forgot_password_screen.dart';
-import 'home_screen.dart';
-
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  final VoidCallback onLogin;
+
+  const LoginScreen({super.key, required this.onLogin});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -33,7 +32,6 @@ class _LoginScreenState extends State<LoginScreen> {
       final data = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
-        // ✅ Token kaydet
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('token', data['token']);
 
@@ -41,11 +39,8 @@ class _LoginScreenState extends State<LoginScreen> {
           const SnackBar(content: Text("Giriş başarılı")),
         );
 
-        // ✅ Ana sayfaya yönlendir
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const HomeScreen()),
-        );
+        widget.onLogin(); // ⬅️ Ana yapıya login bilgisini bildir
+
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(data['error'] ?? "Bir hata oluştu")),

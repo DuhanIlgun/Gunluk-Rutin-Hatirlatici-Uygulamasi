@@ -11,8 +11,10 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController taskController = TextEditingController();
+  final TextEditingController searchController = TextEditingController();
   DateTime? selectedDate;
   List<Task> tasks = [];
+  String searchQuery = '';
 
   @override
   void initState() {
@@ -32,7 +34,12 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> addTask() async {
-    if (taskController.text.isEmpty || selectedDate == null) return;
+    if (taskController.text.isEmpty || selectedDate == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Lütfen tüm alanları doldurun.")),
+      );
+      return;
+    }
 
     final newTask = Task(
       text: taskController.text.trim(),
@@ -82,91 +89,146 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // filtreli görev listesi
+    final filteredTasks = tasks.where((task) {
+      return task.text.toLowerCase().contains(searchQuery.toLowerCase());
+    }).toList();
+
     return Scaffold(
-      backgroundColor: const Color(0xfff5f7fa),
-      appBar: AppBar(
-        title: const Text('📌 Bugünkü Rutinini Yönet'),
-        backgroundColor: Colors.indigo,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            TextField(
-              controller: taskController,
-              decoration: InputDecoration(
-                labelText: "Görev: kitap oku, spor yap...",
-                prefixIcon: const Icon(Icons.task_alt),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-              ),
-            ),
-            const SizedBox(height: 12),
-            Row(
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/images/bg.jpg"),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
               children: [
-                Expanded(
-                  child: Text(
-                    selectedDate == null
-                        ? "📅 Tarih/Saat seçilmedi"
-                        : "📅 ${selectedDate.toString()}",
-                    style: const TextStyle(fontSize: 14),
+                Text(
+                  "📌 Bugünkü Rutinini Yönet",
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
                 ),
+                const SizedBox(height: 20),
+
+                // 🔍 Görev Ara
+                TextField(
+                  controller: searchController,
+                  onChanged: (value) {
+                    setState(() {
+                      searchQuery = value;
+                    });
+                  },
+                  style: const TextStyle(color: Colors.white),
+                  decoration: InputDecoration(
+                    hintText: "Görev ara...",
+                    hintStyle: const TextStyle(color: Colors.white70),
+                    prefixIcon: const Icon(Icons.search, color: Colors.white70),
+                    filled: true,
+                    fillColor: Colors.black.withOpacity(0.4),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                ),
+
+                const SizedBox(height: 12),
+
+                // 📝 Görev Girişi
+                TextField(
+                  controller: taskController,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: InputDecoration(
+                    labelText: "Görev: kitap oku, spor yap...",
+                    labelStyle: const TextStyle(color: Colors.white70),
+                    prefixIcon: const Icon(Icons.task_alt, color: Colors.white70),
+                    filled: true,
+                    fillColor: Colors.black.withOpacity(0.4),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        selectedDate == null
+                            ? "📅 Lütfen tarih/saat seçin"
+                            : "📅 ${selectedDate.toString()}",
+                        style: const TextStyle(fontSize: 14, color: Colors.white70),
+                      ),
+                    ),
+                    ElevatedButton.icon(
+                      onPressed: pickDateTime,
+                      icon: const Icon(Icons.calendar_today, size: 16),
+                      label: const Text("Tarih Seç"),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF1B2A42),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
                 ElevatedButton.icon(
-                  onPressed: pickDateTime,
-                  icon: const Icon(Icons.calendar_today),
-                  label: const Text("Tarih Seç"),
+                  onPressed: addTask,
+                  icon: const Icon(Icons.add),
+                  label: const Text("Ekle"),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.indigo,
+                    backgroundColor: const Color(0xFF1B2A42),
+                    minimumSize: const Size(double.infinity, 48),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "📝 Görev Listesi",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Expanded(
+                  child: filteredTasks.isEmpty
+                      ? const Center(
+                    child: Text(
+                      "Henüz görev eklenmedi.",
+                      style: TextStyle(fontSize: 16, color: Colors.white70),
+                    ),
+                  )
+                      : ListView.builder(
+                    itemCount: filteredTasks.length,
+                    itemBuilder: (context, index) {
+                      final task = filteredTasks[index];
+                      return Card(
+                        color: Colors.black.withOpacity(0.4),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        child: ListTile(
+                          leading: const Icon(Icons.check_circle_outline, color: Colors.white),
+                          title: Text(task.text, style: const TextStyle(color: Colors.white)),
+                          subtitle: Text(task.time.toString(),
+                              style: const TextStyle(color: Colors.white70)),
+                          trailing: IconButton(
+                            icon: const Icon(Icons.delete, color: Colors.redAccent),
+                            onPressed: () => deleteTask(task.id!),
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 10),
-            ElevatedButton.icon(
-              onPressed: addTask,
-              icon: const Icon(Icons.add),
-              label: const Text("Ekle"),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-                minimumSize: const Size(double.infinity, 48),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-              ),
-            ),
-            const SizedBox(height: 16),
-            const Align(
-              alignment: Alignment.centerLeft,
-              child: Text("📝 Görev Listesi", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-            ),
-            const SizedBox(height: 8),
-            Expanded(
-              child: tasks.isEmpty
-                  ? const Center(
-                child: Text(
-                  "Henüz görev eklenmedi.",
-                  style: TextStyle(fontSize: 16, color: Colors.grey),
-                ),
-              )
-                  : ListView.builder(
-                itemCount: tasks.length,
-                itemBuilder: (context, index) {
-                  final task = tasks[index];
-                  return Card(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    child: ListTile(
-                      leading: const Icon(Icons.check_circle_outline, color: Colors.indigo),
-                      title: Text(task.text),
-                      subtitle: Text(task.time.toString()),
-                      trailing: IconButton(
-                        icon: const Icon(Icons.delete, color: Colors.red),
-                        onPressed: () => deleteTask(task.id!),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );

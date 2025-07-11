@@ -40,6 +40,14 @@ class TaskService {
       throw Exception('Görev eklenemedi!');
     }
   }
+  static Future<List<Task>> getTasksByDate(DateTime date) async {
+    final allTasks = await getTasks();
+    return allTasks.where((task) =>
+    task.time.year == date.year &&
+        task.time.month == date.month &&
+        task.time.day == date.day
+    ).toList();
+  }
 
   static Future<void> deleteTask(String id) async {
     final prefs = await SharedPreferences.getInstance();
