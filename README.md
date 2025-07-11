@@ -13,20 +13,11 @@ Günlük Rutin Hatırlatıcı Uygulaması, kullanıcıların günlük görevleri
 
 ## 📦 Proje Yapısı
 
-GunlukRutinHatirlaticiUygulamasi/
-├── .vscode/
-├── images/ # Tüm görseller burada (NOT: GitHub'da görünmese bile mantıksal olarak varsayılmıştır)
-├── calendar.html
-├── forgot-password.html
-├── goals.html
-├── index.html
-├── login.html
-├── motivation.html
-├── notes.html
-├── register.html
-├── reset-password.html
-├── settings.html
-└── README.md
+
+- `frontend` branch: Web HTML/CSS/JS arayüzü
+- `backend` branch: Node.js + Express backend
+- `mobile` branch: Flutter ile geliştirilen mobil uygulama
+
 
 
 ---
