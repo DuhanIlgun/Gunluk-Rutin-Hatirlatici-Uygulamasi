@@ -105,4 +105,4 @@ Bu proje MIT lisansı ile lisanslanmıştır. Dilediğiniz gibi kullanabilir, de
 
 ---
 
-İstersen bu dosyayı sana `.md` formatında dışa aktarabilirim ya da doğrudan GitHub’a yükleyebilirsin. Bir sonraki adımda mobil README veya PDF’ye dönüştürme istersen haber ver
+
